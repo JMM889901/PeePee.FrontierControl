@@ -71,14 +71,14 @@ void function GameStart()
     {
         foreach(entity player in GetPlayerArray())
         {
-            SendHudMessage( player, "Its the IMCs turn to attack! Vote at the map console", -1, 0.2, 255, 200, 200, 255, 0, 10, 0 )
+            SendHudMessage( player, "Its the IMCs turn to attack! Vote at the map console \n You have "+FCGetCredits(player)+" Credits, in the future these will do something", -1, 0.2, 255, 200, 200, 255, 0, 10, 0 )
         }
     }
     else
     {
         foreach(entity player in GetPlayerArray())
         {
-            SendHudMessage( player, "Its the militias turn to attack! Vote at the map console", -1, 0.2, 255, 200, 200, 255, 0, 10, 0 )
+            SendHudMessage( player, "Its the militias turn to attack! Vote at the map console \n You have "+FCGetCredits(player)+" Credits, in the future these will do something", -1, 0.2, 255, 200, 200, 255, 0, 10, 0 )
         }
     }
 }
