@@ -1,0 +1,94 @@
+untyped
+const FRIENDLY = 1
+const HOSTILE = 0
+
+
+global function InitMapMenu
+global function ServerCallback_OpenMap
+global function OnOpenFWMapsMenu
+void function InitMapMenu()
+{
+    //GetMapImageForMapName( map )
+    //GetConVarString( "bot_titan_settings" )
+    var menu = GetMenu( "FrontierControlMap" )
+    array<var> Maps = GetElementsByClassname( menu, "MapGridInfo" )
+    AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenFWMapsMenu )
+	//AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnCloseMapsMenu )
+    foreach ( var button in GetElementsByClassname( menu, "MapGridButtons" ) )
+	{
+		AddButtonEventHandler( button, UIE_CLICK, VoteMap )
+        //AddButtonEventHandler( button, UIE_GET_FOCUS, DisplayInfo ) Maybe do this at some point lol
+        //print(button)
+	}
+}
+void function OnOpenFWMapsMenu()
+{
+    var menu = GetMenu( "FrontierControlMap" )
+    array<var> Maps = GetElementsByClassname( menu, "MapGridInfo" )
+    foreach ( int _index,  var element in Maps )
+	{
+		
+		var mapImage = Hud_GetChild( element, "MapImage" )
+		var mapName = Hud_GetChild( element, "MapName" )
+		
+		string name = FC_GetMap(GetConVarInt("FCMap"+Hud_GetScriptID(element)))
+		print(name)
+		RuiSetImage( Hud_GetRui( mapImage ), "basicImage", GetMapImageForMapName( name ) )
+		Hud_SetText( mapName, GetMapDisplayName( name ) )
+
+        if(!HasValidAttackPath(Hud_GetScriptID(element).tointeger()))
+        {
+            var mapFG = Hud_GetChild( element, "MapNameLockedForeground" )
+	
+            Hud_SetVisible( mapFG, true )
+        }
+        else
+        {
+            var mapFG = Hud_GetChild( element, "MapNameLockedForeground" )
+	
+            Hud_SetVisible( mapFG, false )
+        }
+        var Border = Hud_GetChild( element, "TeamBorder" )
+        if(GetConVarInt("FCMap"+Hud_GetScriptID(element)+"Owner") == GetTeam() )
+        {
+            print("Friendly")
+            Hud_SetColor( Border, 0,0,100,100)
+            //RuiSetFloat3( Border, "basicImageColor", <0,0,100> )
+            //RuiSetFloat( Border, "basicImageAlpha", 1 )
+        
+        }
+        else if(GetConVarInt("FCMap"+Hud_GetScriptID(element)+"Owner") != GetTeam() )
+        {
+            Hud_SetColor( Border, 255,0,0,100)
+            //RuiSetFloat3( Border, "basicImageColor", <100,0,0> )
+            //RuiSetFloat( Border, "basicImageAlpha", 1 )
+        }
+            //if ( IsLocked( name ) )
+		//	LockMapButton( element )
+		Hud_SetVisible( Maps[ _index ], true )
+		//MakeMapButtonVisible( element )
+	}
+    foreach ( var button in GetElementsByClassname( menu, "MapGridButtons" ) )
+    {
+
+        if(!HasValidAttackPath(Hud_GetScriptID(button).tointeger()))
+        {
+            Hud_SetLocked( button , true)
+            Hud_SetEnabled(button, false)
+        }
+        else
+        {
+            Hud_SetLocked( button , false)
+            Hud_SetEnabled(button, true)
+        }
+    }
+}
+
+void function ServerCallback_OpenMap()
+{
+    AdvanceMenu(GetMenu("FrontierControlMap"))
+}
+void function VoteMap(var element)
+{
+    ClientCommand("!FCVoteForMap "+ Hud_GetScriptID(element))
+}

@@ -1,0 +1,110 @@
+globalize_all_functions
+
+//global array<var> consoleVars;
+global const string GAMEMODE_RAIDLOBBY = "RaidLobby"
+global const string GAMEMODE_FCPUSH = "FrontierControlPush"
+void function RAID_LOBBY_MODE_Init()
+{
+	AddCallback_OnCustomGamemodesInit( CreateGamemodeRAID_LOBBY )
+	AddCallback_OnCustomGamemodesInit( CreateGamemodeFrontierControl_Push )
+	AddCallback_OnRegisteringCustomNetworkVars( RAID_LOBBYRegisterNetworkVars )
+    print("init")
+}
+bool function TeamHasWon(int team)
+{
+	return(GetConVarInt("FCMap1Owner") == team && GetConVarInt("FCMap6Owner") == team)
+}
+void function CreateGamemodeFrontierControl_Push()
+{
+ 	GameMode_Create( GAMEMODE_FCPUSH )
+	GameMode_SetName( GAMEMODE_FCPUSH, "#GAMEMODE_FRONTIERCONTROL_PUSH" )
+	GameMode_SetDesc( GAMEMODE_FCPUSH, "#FRONTIERCONTROL_PUSH_desc" )
+	GameMode_SetGameModeAnnouncement( GAMEMODE_FCPUSH, "ffa_modeDesc" )
+    GameMode_AddScoreboardColumnData( GAMEMODE_FCPUSH, "#SCOREBOARD_SCORE", PGS_ASSAULT_SCORE, 2 )
+	GameMode_AddScoreboardColumnData( GAMEMODE_FCPUSH, "#SCOREBOARD_PILOT_KILLS", PGS_PILOT_KILLS, 2 )
+	GameMode_SetDefaultTimeLimits( GAMEMODE_FCPUSH, 15, 0.0 )
+	GameMode_SetColor( GAMEMODE_FCPUSH, [147, 204, 57, 255] )
+    print("added")
+	AddPrivateMatchMode( GAMEMODE_FCPUSH ) // add to private lobby modes
+
+	GameMode_SetDefaultScoreLimits( GAMEMODE_FCPUSH, 100000, 0 )
+
+	#if SERVER
+		GameMode_AddServerInit( GAMEMODE_FCPUSH, PP_GameMode_FrontierControlPush_init )
+        //GameMode_AddServerInit( GAMEMODE_FCPUSH, GamemodeFFAShared_Init )
+		GameMode_SetPilotSpawnpointsRatingFunc( GAMEMODE_FCPUSH, RateSpawnpoints_FCHarvester )
+		GameMode_SetTitanSpawnpointsRatingFunc( GAMEMODE_FCPUSH, RateSpawnpoints_FCHarvester )
+    #elseif CLIENT
+    	GameMode_AddClientInit( GAMEMODE_FCPUSH, ClGamemodeAITDM_Init )
+		//GameMode_AddClientInit( GAMEMODE_FCPUSH, PP_GameMode_FrontierControlPush_init )
+        //GameMode_AddServerInit( GAMEMODE_FCPUSH, GamemodeFFAShared_Init )
+    #endif  
+	#if !UI
+		GameMode_SetScoreCompareFunc( GAMEMODE_FCPUSH, CompareAssaultScore )
+		GameMode_AddSharedInit( GAMEMODE_FCPUSH, GamemodeAITdmShared_Init )
+		//GameMode_AddSharedInit( GAMEMODE_FCPUSH, GamemodeAITdmShared_Init )
+	#endif
+}
+void function CreateGamemodeRAID_LOBBY()
+{
+ 	GameMode_Create( GAMEMODE_RAIDLOBBY )
+	GameMode_SetName( GAMEMODE_RAIDLOBBY, "#GAMEMODE_RAIDSLOBBY" )
+	GameMode_SetDesc( GAMEMODE_RAIDLOBBY, "#PL_RAID_LOBBY_desc" )
+	GameMode_SetGameModeAnnouncement( GAMEMODE_RAIDLOBBY, "ffa_modeDesc" )
+    GameMode_AddScoreboardColumnData( GAMEMODE_RAIDLOBBY, "#SCOREBOARD_SCORE", PGS_ASSAULT_SCORE, 2 )
+	GameMode_AddScoreboardColumnData( GAMEMODE_RAIDLOBBY, "#SCOREBOARD_PILOT_KILLS", PGS_PILOT_KILLS, 2 )
+	GameMode_SetDefaultTimeLimits( GAMEMODE_RAIDLOBBY, 5, 0.0 )
+	GameMode_SetColor( GAMEMODE_RAIDLOBBY, [147, 204, 57, 255] )
+    print("added")
+	AddPrivateMatchMode( GAMEMODE_RAIDLOBBY ) // add to private lobby modes
+
+	GameMode_SetDefaultScoreLimits( GAMEMODE_RAIDLOBBY, 999, 0 )
+
+	#if SERVER
+		GameMode_AddServerInit( GAMEMODE_RAIDLOBBY, RaidsLobby_Init )
+        GameMode_AddServerInit( GAMEMODE_RAIDLOBBY, GamemodeFFAShared_Init )
+		GameMode_SetPilotSpawnpointsRatingFunc( GAMEMODE_RAIDLOBBY, RateSpawnpoints_Generic )
+		GameMode_SetTitanSpawnpointsRatingFunc( GAMEMODE_RAIDLOBBY, RateSpawnpoints_Generic )
+    #elseif CLIENT
+    	GameMode_AddClientInit( GAMEMODE_RAIDLOBBY, ClGamemodeFFA_Init )
+		GameMode_AddClientInit( GAMEMODE_RAIDLOBBY, ClGamemodeRaids_Init )
+        GameMode_AddServerInit( GAMEMODE_RAIDLOBBY, GamemodeFFAShared_Init )
+    #endif  
+	#if !UI
+        GameMode_SetScoreCompareFunc( GAMEMODE_RAIDLOBBY, CompareAssaultScore )
+		GameMode_AddSharedInit( GAMEMODE_RAIDLOBBY, GamemodeFFA_Dialogue_Init )
+	#endif
+}
+
+void function RAID_LOBBYRegisterNetworkVars()
+{
+	if ( GAMETYPE == GAMEMODE_RAIDLOBBY )
+	{
+		
+    Remote_RegisterFunction("ServerCallback_OpenArmoury")
+	Remote_RegisterFunction("FCSetMap1")
+	Remote_RegisterFunction("FCSetMap2")
+	Remote_RegisterFunction("FCSetMap3")
+	Remote_RegisterFunction("FCSetMap4")
+	Remote_RegisterFunction("FCSetMap5")
+	Remote_RegisterFunction("FCSetMap6")
+	Remote_RegisterFunction("FCSetMapOwner")
+	Remote_RegisterFunction("RaidsStartupUi")
+	Remote_RegisterFunction("ServerCallback_OpenMap")
+	Remote_RegisterFunction("FC_SetMapHostile")
+	Remote_RegisterFunction("FC_SetMapFriendly")
+	//RegisterNetworkedVariable( "Map1", SNDC_GLOBAL, SNVT_INT, 0 )
+	//AddServerToClientStringCommandCallback //Twenty-Seven my beloved
+	}
+	if ( GAMETYPE == GAMEMODE_FCPUSH)
+	{
+	RegisterNetworkedVariable( "AT_bonusPoints", SNDC_PLAYER_GLOBAL, SNVT_UNSIGNED_INT, 0 )
+	RegisterNetworkedVariable( "AT_bonusPoints256", SNDC_PLAYER_GLOBAL, SNVT_UNSIGNED_INT, 0 )
+	RegisterNetworkedVariable( "AT_earnedPoints", SNDC_PLAYER_GLOBAL, SNVT_UNSIGNED_INT, 0 )
+	RegisterNetworkedVariable( "AT_earnedPoints256", SNDC_PLAYER_GLOBAL, SNVT_UNSIGNED_INT, 0 )
+
+	RegisterNetworkedVariable( "IMCdefcon", SNDC_GLOBAL, SNVT_INT, 0 )
+	RegisterNetworkedVariable( "MILdefcon", SNDC_GLOBAL, SNVT_INT, 0 )
+	Remote_RegisterFunction( "ServerCallback_AITDM_OnPlayerConnected" )
+	}
+}

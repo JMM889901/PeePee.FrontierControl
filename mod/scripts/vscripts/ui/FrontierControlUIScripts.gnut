@@ -1,0 +1,73 @@
+untyped
+global function RaidsStartupUi
+global function ServerCallback_OpenArmoury
+
+global function InitArmouryMenu
+global function UpdateArmouryMenu
+//Variable declaration
+
+//Init
+
+void function RaidsStartupUi(){
+    AddMenu( "ArmouryMenu", $"resource/ui/menus/RaidsArmoury.menu", InitArmouryMenu )
+    AddMenu( "GunModsMenu", $"resource/ui/menus/RaidsArmoury-WeaponMods.menu", InitGunModsMenu )
+    AddMenu( "FrontierControlMap", $"resource/ui/menus/FrontierControlMap.menu", InitMapMenu )
+    InitArmouryMenu()
+    InitGunModsMenu()
+}
+
+//Armoury Menu
+void function ServerCallback_OpenArmoury(){
+    UpdateArmouryMenu()
+    AdvanceMenu(GetMenu("ArmouryMenu"))
+}//script_ui AdvanceMenu(GetMenu("FrontierControlMap"))
+void function InitArmouryMenu()
+{
+    print("err")
+    var menu = GetMenu("ArmouryMenu")
+    print(menu)
+    foreach ( var button in GetElementsByClassname( GetMenu( "ArmouryMenu" ), "ClassSelectClass" ) )
+	{
+		//AddButtonEventHandler( button, UIE_CLICK, SwitchClass )
+        //print(button)
+	}
+    foreach ( var button in GetElementsByClassname( GetMenu( "ArmouryMenu" ), "WeaponSelectClass" ) )
+	{
+        //AddButtonEventHandler( button, UIE_GET_FOCUS, OnGunHover )
+        //print(button)
+	}  
+}
+void function UpdateArmouryMenu()
+{
+    foreach ( var button in GetElementsByClassname( GetMenu( "ArmouryMenu" ), "ArmouryGunSelectImg" ) )
+	{
+        //Hud_SetImage(button, ClassWeaponImg(Hud_GetScriptID(button)))
+	}
+    foreach ( var button in GetElementsByClassname( GetMenu( "ArmouryMenu" ), "ArmourySelectImg" ) )
+	{
+        //Hud_SetImage(button, ClassMainWeaponImg(Hud_GetScriptID(button)))
+	}
+}
+
+
+
+//Gun mods menu
+int SelectedPlayerGun
+void function InitGunModsMenu()
+{
+    foreach ( var button in GetElementsByClassname( GetMenu( "GunModsMenu" ), "WeaponSelectClass" ) )
+	{
+        //AddButtonEventHandler( button, UIE_CLICK, Callback_SelectMods )
+	}
+    foreach ( var button in GetElementsByClassname( GetMenu( "GunModsMenu" ), "ModSelectClass" ) ){
+        //AddButtonEventHandler( button, UIE_CLICK, OnModSelcted )
+    }
+    foreach ( var button in GetElementsByClassname( GetMenu( "GunModsMenu" ), "SightSelectClass" ) ){
+        //AddButtonEventHandler( button, UIE_CLICK, Callback_SightSelcted )
+    }
+    
+}
+void function UpdateGunModsMenu(){
+
+    }
+

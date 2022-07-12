@@ -1,0 +1,366 @@
+resource/ui/menus/RaidsArmoury.menu
+{
+	menu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 100"
+		outoffocus_bgcolor_override	"0 0 0 100"
+
+        Vignette
+        {
+            ControlName             ImagePanel
+            InheritProperties       MenuVignette
+        }
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				""
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+	    CreditsAvailable
+	    {
+	        ControlName             RuiPanel
+	        InheritProperties       Label
+			labelText				"Placeholder"
+	    }
+		DarkenBackground
+		{
+			ControlName				Label
+			xpos					0
+			ypos					0
+			wide					%100
+			tall					%100
+			labelText				""
+			bgcolor_override		"0 0 0 240"
+			visible					1
+			paintbackground			1
+		}
+
+// BUTTON ROW 1 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		Button0
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				ClassSelectClass
+			tall					125
+			wide					250
+			scriptID				0
+			labelText				"Pilot"
+			navUp					Button1
+			xpos					620
+    	    ypos                    890
+			navDown					Button1
+			tabPosition				1
+		}
+		Button1
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				ClassSelectClass
+			tall					125
+			wide					250
+			scriptID				1
+			xpos					150
+			pin_to_sibling			Button0
+			pin_corner_to_sibling	TOP_LEFT
+			labelText				"Titan"
+			pin_to_sibling_corner	TOP_RIGHT
+			navUp					Button0
+			navDown					Button0
+		}
+
+//////////Button Row 1 Images//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		Button0Img
+		{
+			tall					125
+			wide					250
+			ControlName				ImagePanel
+			InheritProperties		ImagePanel
+			scriptID				"Pilot"
+			classname 				ArmourySelectImg
+			image							"r2_ui/menus/loadout_icons/titan_weapon/titan_weapon_xo16"
+			pin_to_sibling			Button0
+			scaleImage			1
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_LEFT
+		}
+		Button1Img
+		{
+			tall					125
+			wide					250
+			scriptID				"Titan"
+			ControlName				ImagePanel
+			InheritProperties		ImagePanel
+			classname 				ArmourySelectImg
+			pin_to_sibling			Button1
+			image							"r2_ui/menus/loadout_icons/titan_weapon/titan_weapon_xo16"
+			scaleImage			1
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_LEFT
+		}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		GunButton0
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				WeaponSelectClass
+			tall					125
+			wide					250
+			scriptID				0
+	        xpos					50
+    	    ypos                    200
+			labelText				"Slot 1"
+			navUp					GunButton2
+			navDown					GunButton1
+			tabPosition				1
+		}
+		GunButton1
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				WeaponSelectClass
+			tall					125
+			wide					250
+			scriptID				1
+			ypos					150
+			pin_to_sibling			GunButton0
+			pin_corner_to_sibling	TOP_LEFT
+			labelText				"Slot 2"
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					GunButton0
+			navDown					GunButton2
+		}
+		GunButton2
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				WeaponSelectClass
+			tall					125
+			wide					250
+			scriptID				2
+			ypos					150
+			pin_to_sibling			GunButton1
+			pin_corner_to_sibling	TOP_LEFT
+			labelText				"Slot 3"
+			pin_to_sibling_corner	BOTTOM_LEFT
+			navUp					GunButton1
+			navDown					GunButton0
+		}
+////////////////////GunImg/////////////////////////////////////////////////////////////////////////////////////
+		GunButtonImg0
+		{
+			tall					125
+			wide					250
+			ControlName				ImagePanel
+			InheritProperties		ImagePanel
+			classname 				ArmouryGunSelectImg
+			scriptID				0
+			image           "r2_ui/menus/loadout_icons/primary_weapon/primary_r97n"
+			pin_to_sibling			GunButton0
+			scaleImage			1
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_LEFT
+		}
+		GunButtonImg1
+		{
+			tall					125
+			wide					250
+			ControlName				ImagePanel
+			InheritProperties		ImagePanel
+			scriptID				1
+			classname 				ArmouryGunSelectImg
+			image           "r2_ui/menus/loadout_icons/secondary_weapon/secondary_autopistol"
+			pin_to_sibling			GunButton1
+			scaleImage			1
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_LEFT
+		}
+		GunButtonImg2
+		{
+			tall					125
+			wide					250
+			scriptID				2
+			ControlName				ImagePanel
+			InheritProperties		ImagePanel
+			classname 				ArmouryGunSelectImg
+			image           "r2_ui/menus/loadout_icons/anti_titan/at_defenderc"
+			pin_to_sibling			GunButton2
+			scaleImage			1
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_LEFT
+		}
+//////////////GunOptions///////////////////////////////////////////////////////////////////////
+		GunOptionButtonMod1
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				GunOptionButtonMod
+			tall					62
+			wide					200
+			scriptID				0
+			labelText				"Select Mods"
+			pin_to_sibling			GunButton0
+			pin_corner_to_sibling	BOTTOM_LEFT
+			pin_to_sibling_corner	BOTTOM_RIGHT
+			navUp					GunOptionButton01
+			navDown					GunOptionButton01
+			tabPosition				1
+			visible					0
+		}
+		GunOptionButtonWeapon1
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				GunOptionButtonWeapon
+			tall					62
+			wide					200
+			scriptID				0
+			labelText				"Select Weapon"
+			pin_to_sibling			GunButton0
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_RIGHT
+			navUp					GunOptionButton00
+			navDown					GunOptionButton00
+			visible					0
+		}
+		GunOptionButtonMod2
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				GunOptionButtonMod
+			tall					62
+			wide					200
+			scriptID				1
+			labelText				"Select Mods"
+			pin_to_sibling			GunButton1
+			pin_corner_to_sibling	BOTTOM_LEFT
+			pin_to_sibling_corner	BOTTOM_RIGHT
+			navUp					GunOptionButton11
+			navDown					GunOptionButton11
+			tabPosition				1
+			visible					0
+		}
+		GunOptionButtonWeapon2
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				GunOptionButtonWeapon
+			tall					62
+			wide					200
+			scriptID				1
+			labelText				"Select Weapon"
+			pin_to_sibling			GunButton1
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_RIGHT
+			navUp					GunOptionButton10
+			navDown					GunOptionButton10
+			visible					0
+		}
+		GunOptionButtonMod3
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				GunOptionButtonMod
+			tall					62
+			wide					200
+			scriptID				2
+			labelText				"Select Mods"
+			pin_to_sibling			GunButton2
+			pin_corner_to_sibling	BOTTOM_LEFT
+			pin_to_sibling_corner	BOTTOM_RIGHT
+			navUp					GunOptionButton21
+			navDown					GunOptionButton21
+			tabPosition				1
+			visible					0
+		}
+		GunOptionButtonWeapon3
+		{
+			ControlName				RuiButton
+			InheritProperties		RuiSmallButton
+			classname				GunOptionButtonWeapon
+			tall					62
+			wide					200
+			scriptID				2
+			labelText				"Select Weapon"
+			pin_to_sibling			GunButton2
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_RIGHT
+			navUp					GunOptionButton20
+			navDown					GunOptionButton20
+			visible					0
+		}
+// CHALLENGE INFO //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		//ChallengePanel
+		//{
+		//	ControlName				CNestedPanel
+		//	classname 				"ItemLockedClass ChallengeLockInfo ChallengeLockPanel"
+		//	xpos					0
+		//	ypos					-22
+		//	zpos					6
+		//	wide					719
+		//	tall					169
+		//	visible					1
+		//	controlSettingsFile		"resource/UI/menus/eog_challenge_box.res"
+		//	pin_to_sibling			MenuPanel
+		//	pin_corner_to_sibling	BOTTOM
+		//	pin_to_sibling_corner	BOTTOM
+		//}
+		//ChallengePanelHover
+		//{
+		//	ControlName				ImagePanel
+		//	classname 				"ItemLockedClass ChallengeLockInfo"
+		//	xpos					0
+		//	ypos					-9
+		//	zpos					5
+		//	wide					719
+		//	tall					169
+		//	image 					"ui/menu/challenges/challenge_box_hover_loadout"
+		//	visible					1
+		//	scaleImage				1
+		//	pin_to_sibling			MenuPanel
+		//	pin_corner_to_sibling	BOTTOM
+		//	pin_to_sibling_corner	BOTTOM
+		//}
+
+// FOOTER //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		FooterButtons
+		{
+			ControlName				CNestedPanel
+			InheritProperties       FooterButtons
+		}
+	}
+
+}

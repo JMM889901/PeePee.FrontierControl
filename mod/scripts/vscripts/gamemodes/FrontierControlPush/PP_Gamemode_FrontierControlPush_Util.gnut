@@ -1,0 +1,19 @@
+untyped
+globalize_all_functions
+struct {
+	array<vector> preferSpawnNodes
+} spawnStateGeneric
+void function RateSpawnpoints_FCHarvester( int checkClass, array<entity> spawnpoints, int team, entity player )
+{	
+    {
+        foreach ( entity spawnpoint in spawnpoints )
+        {
+            float rating = spawnpoint.CalculateFrontlineRating()
+            float distHarvester
+            distHarvester = Distance2D( spawnpoint.GetOrigin(), FrontierControlSpawn(team))
+            rating /= (1000/distHarvester)  
+            spawnpoint.CalculateRating( checkClass, player.GetTeam(), rating, rating > 0 ? rating * 0.25 : rating )
+        }
+    }
+}
+

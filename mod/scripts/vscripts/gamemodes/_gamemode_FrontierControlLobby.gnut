@@ -1,0 +1,269 @@
+untyped
+global function RaidsLobby_Init
+global function SendAllStartupInfo
+table<string, array<string> > ActivePlayerAllowedMods = {}
+table<string, array<string> > ActivePlayerData = {}
+void function RaidsLobby_Init(){
+    SetShouldUseRoundWinningKillReplay( false )
+	ClassicMP_ForceDisableEpilogue( true )
+	SetLoadoutGracePeriodEnabled( true )
+	SetWeaponDropsEnabled( true )
+	Riff_ForceTitanAvailability( eTitanAvailability.Never )
+	Riff_ForceBoostAvailability( eBoostAvailability.Disabled )
+    AddCallback_OnClientConnected(SendAllStartupInfo)
+	AddCallback_OnPlayerRespawned( OnPlayerRespawned )
+    AddCallback_GameStateEnter( eGameState.WinnerDetermined, GameEnded )
+    AddCallback_GameStateEnter( eGameState.Playing, GameStart )
+    //CreateStore()
+    CreateArmoury()
+    CreateMap(Vector( 450, 1950, 0 ))
+    CreateMap(<129.509, -1561.04, 16.0313>)
+    CreateDebug()
+    AddCommandCallbacks()
+}
+struct{
+    table<entity, string> playerSelectedMap
+    table<string, int> MapVotes
+} file
+void function AddCommandCallbacks()
+{
+    //AddClientCommandCallback("!RAIDSGetAllStartupInfo", SendAllStartupInfo)
+    //AddClientCommandCallback("!RAIDSChangeWeaponId", ChangeWeaponInSlot)
+    //AddClientCommandCallback("!RAIDSChangeModId", ChangeModInSlot)
+    //AddClientCommandCallback("!RAIDSChangeAttachmentId", ChangeAttachmentInSlot)
+    AddClientCommandCallback("!FCVoteForMap", PlayerVotesForMap)
+}
+void function SendAllStartupInfo(entity player)
+{
+    ValidatePlayerCreditsVar(player)
+    //Remote_CallFunction_UI(player, "UpdateGamestateFromServer", gun.tointeger())
+    for(int i = 1; i<7; i++)
+    {
+        Remote_CallFunction_UI(player, "FCSetMap"+i, GetConVarInt("FCmap"+i))
+        Remote_CallFunction_UI(player, "FCSetMapOwner", i, GetConVarInt("FCmap"+i+"Owner"))
+    }
+
+}
+void function GameStart()
+{
+
+    if(TeamHasWon(TEAM_IMC))
+    {
+        foreach(entity player in GetPlayerArray())
+        {
+            SendHudMessage( player, "The IMC has won!, restarting in 2 minutes", -1, 0.2, 255, 200, 200, 255, 2, 10, 0 )
+            SetServerVar( "gameEndTime", Time()+120)
+            SetConVarInt("FCgamestate", FCGamestate_postgame)
+            return
+        }
+    }
+    if(TeamHasWon(TEAM_MILITIA))
+    {
+        foreach(entity player in GetPlayerArray())
+        {
+            SendHudMessage( player, "The militia has won!, restarting in 2 minutes", -1, 0.2, 255, 200, 200, 255, 2, 10, 0 )
+            SetServerVar( "gameEndTime", Time()+120)
+            SetConVarInt("FCgamestate", FCGamestate_postgame)
+            return
+        }
+    }
+    if(GetConVarInt("FCTeaminitiative") == TEAM_IMC)
+    {
+        foreach(entity player in GetPlayerArray())
+        {
+            SendHudMessage( player, "Its the IMCs turn to attack! Vote at the map console", -1, 0.2, 255, 200, 200, 255, 0, 10, 0 )
+        }
+    }
+    else
+    {
+        foreach(entity player in GetPlayerArray())
+        {
+            SendHudMessage( player, "Its the militias turn to attack! Vote at the map console", -1, 0.2, 255, 200, 200, 255, 0, 10, 0 )
+        }
+    }
+}
+bool function PlayerVotesForMap(entity player, array<string> args)
+{
+    if(GetConVarInt("FCgamestate") != FCGamestate_intermission || (player.GetTeam() != GetConVarInt("FCTeaminitiative")))
+        return false
+    print("Player voted for map "+args[0])
+    print("yup")
+    if(player in file.playerSelectedMap)
+        file.MapVotes[file.playerSelectedMap[player]] += -1
+    file.playerSelectedMap[player] <- args[0]
+    if(args[0] in file.MapVotes)
+        file.MapVotes[args[0]]++
+    else
+        file.MapVotes[args[0]]<- 1
+    int votedplayers = 0
+    foreach(string key, int value in file.MapVotes)
+    {
+        if(value/GetPlayerArray().len() > 0.8)
+        {
+            //SetServerVar( "roundEndTime", Time()+30)
+            if(GetServerVar( "gameEndTime" ) > Time()+30)
+                SetServerVar( "gameEndTime", Time()+30) // client only sees this
+            //SetConVarInt("FCmap"+args[0].tointeger()+"Owner", 1)
+            //Remote_CallFunction_UI(player, "FC_SetMapFriendly", GetConVarInt("FCmap"+args[0]+"Owner"))    
+            //votedplayers++
+            //if(votedplayers/GetPlayerArray().len() > 0.8)
+        }     
+        //SetConVarInt("FCmap"+args[0].tointeger()+"Owner", 1)
+        //Remote_CallFunction_UI(player, "FC_SetMapFriendly", GetConVarInt("FCmap"+args[0]+"Owner"))    
+    }
+
+    return true
+}
+void function GameEnded()
+{
+    if(GetConVarInt("FCgamestate") == FCGamestate_postgame)
+    {
+        FCRestartMatch()
+        GameRules_ChangeMap("mp_lf_township", GAMEMODE_RAIDLOBBY /*"FrontierControl*/)
+        return
+    }
+    //else if(GetConVarInt("FCgamestate") != FCGamestate_intermission)
+    //    return
+    int MaxValue = 0
+    string MaxKey = ""
+    foreach(string key, int value in file.MapVotes)
+    {
+        if(value > MaxValue)
+        {
+            MaxKey = key
+            MaxValue = value
+        }
+        //SetConVarInt("FCmap"+args[0].tointeger()+"Owner", 1)
+        //Remote_CallFunction_UI(player, "FC_SetMapFriendly", GetConVarInt("FCmap"+args[0]+"Owner"))    
+    }
+    print("MaxKey" +MaxKey)
+    if(MaxKey == "")
+        MaxKey = FindValidAttackPathForTeam(GetConVarInt("FCTeaminitiative")).tostring()
+    SetConVarInt("FCSelectedIndex", MaxKey.tointeger())
+    GameRules_ChangeMap(FC_GetMap(GetConVarInt("FCmap"+MaxKey)), GAMEMODE_FCPUSH /*"FrontierControl*/)
+}
+
+void function OnPlayerRespawned(entity player)
+{
+    print("OnPlayerRespawned")
+    player.SetOrigin(<456.709, 2386.58, 9.19013>)
+    player.SetAngles(<0, -90, 0>)
+}
+
+void function CreateMap(vector loc)
+{
+    #if SERVER
+    entity store = CreateEntity( "prop_dynamic" )
+    store.SetValueForModelKey($"models/robots/mobile_hardpoint/mobile_hardpoint.mdl" )
+    store.kv.contents = int(store.kv.contents)
+    store.kv.solid = SOLID_VPHYSICS
+    store.SetOrigin( loc/*Vector( 450, 1950, 0 )*/)
+    store.SetAngles( Vector( 0, 0, 0 ) )
+    store.SetBlocksRadiusDamage( true )
+    DispatchSpawn( store )
+    SetTeam( store, 99)
+    store.SetUsable()
+    store.SetUsableByGroup("pilot")
+    store.SetUsePrompts( "Hold %use% to select a raid", "Hold %use% to select a raid" )
+    AddCallback_OnUseEntity( store, OpenMap )
+    #endif
+}
+function OpenMap(store, player)
+{
+    
+    print(store)
+    print(player)
+    if(player.GetTeam() == GetConVarInt("FCTeaminitiative"))
+        Remote_CallFunction_UI(player, "ServerCallback_OpenMap")
+    //CreateDepart()
+}//
+void function CreateDepart(){
+    #if SERVER
+    entity dropship = CreateEntity( "prop_dynamic" )
+    dropship.SetValueForModelKey($"models/vehicle/crow_dropship/crow_dropship_hero.mdl" )
+    dropship.SetModel( $"models/vehicle/crow_dropship/crow_dropship_hero.mdl" ) 
+    dropship.kv.contents = int(dropship.kv.contents)
+    dropship.kv.solid = SOLID_VPHYSICS
+    dropship.SetOrigin( <66.4931, 1322.07, 187.433>)
+    dropship.SetAngles( Vector( 0, 0, 0 ) )
+    dropship.SetBlocksRadiusDamage( true )
+    DispatchSpawn( dropship )
+    SetTeam( dropship, 99)
+    dropship.SetUsable()
+    dropship.SetUsableByGroup("pilot")
+    dropship.SetUsePrompts( "Hold %use% to depart", "Press %use% to depart" )
+    AddCallback_OnUseEntity( dropship, departvote )
+    #endif
+}
+function departvote(dropship, player){
+    
+    print(dropship)
+    print(player)
+
+}
+//void function CreateStore(){
+//    #if SERVER
+//    entity store = CreateEntity( "prop_dynamic" )
+//    store.SetValueForModelKey($"models/communication/terminal_usable_imc_01.mdl" )
+//    store.kv.contents = int(store.kv.contents)
+//    store.kv.solid = SOLID_VPHYSICS
+//    store.SetOrigin( <351, 2152.03, 8.03125>)
+//    store.SetAngles( Vector( 0, 90, 0 ) )
+//    store.SetBlocksRadiusDamage( true )
+//    DispatchSpawn( store )
+//    SetTeam( store, 99)
+//    store.SetUsable()
+//    store.SetUsableByGroup("pilot")
+//    store.SetUsePrompts( "Hold %use% to open the store", "Press %use% to open the store" )
+//    AddCallback_OnUseEntity( store, OpenStore )
+//    #endif
+//}
+//function OpenStore(store, player){
+//    print(store)
+//    print(player)
+//}
+void function CreateArmoury(){
+    #if SERVER
+    entity store = CreateEntity( "prop_dynamic" )
+    store.SetValueForModelKey($"models/communication/terminal_usable_imc_01.mdl" )
+    store.kv.contents = int(store.kv.contents)
+    store.kv.solid = SOLID_VPHYSICS
+    store.SetOrigin(  <544.257, 2152.09, 8.03125>)
+    store.SetAngles( Vector( 0, 90, 0 ) )
+    store.SetBlocksRadiusDamage( true )
+    DispatchSpawn( store )
+    SetTeam( store, 99)
+    store.SetUsable()
+    store.SetUsableByGroup("pilot")
+    store.SetUsePrompts( "Hold %use% to open the armoury", "Press %use% to open the armoury" )
+    AddCallback_OnUseEntity( store, OpenArmoury )
+    #endif
+}
+function OpenArmoury(store, player){
+    print(store)
+    print(player)
+    Remote_CallFunction_UI(player, "ServerCallback_OpenArmoury")
+}
+
+void function CreateDebug(){
+    #if SERVER
+    entity store = CreateEntity( "prop_dynamic" )
+    store.SetValueForModelKey($"models/communication/terminal_usable_imc_01.mdl" )
+    store.kv.contents = int(store.kv.contents)
+    store.kv.solid = SOLID_VPHYSICS
+    store.SetOrigin(  <27.0313, 2152.03, 8.03125>)
+    store.SetAngles( Vector( 0, 45, 0 ) )
+    store.SetBlocksRadiusDamage( true )
+    DispatchSpawn( store )
+    SetTeam( store, 99)
+    store.SetUsable()
+    store.SetUsableByGroup("pilot")
+    store.SetUsePrompts( "Hold %use% to fix UI", "Press %use% to fix UI" )
+    AddCallback_OnUseEntity( store, FIXUI )
+    #endif
+}
+function FIXUI(store, player){
+    print(player)
+    ClientCommand(player, "uiscript_reset")
+    Remote_CallFunction_UI(player, "RaidsStartupUi")
+}

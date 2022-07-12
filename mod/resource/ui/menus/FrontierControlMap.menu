@@ -1,0 +1,264 @@
+resource/ui/menus/FrontierControlMap.menu
+{
+	menu
+	{
+		ControlName				Frame
+		xpos					0
+		ypos					0
+		zpos					3
+		wide					f0
+		tall					f0
+		autoResize				0
+		pinCorner				0
+		visible					1
+		enabled					1
+		PaintBackgroundType		0
+		infocus_bgcolor_override	"0 0 0 100"
+		outoffocus_bgcolor_override	"0 0 0 100"
+
+        Vignette
+        {
+            ControlName             ImagePanel
+            InheritProperties       MenuVignette
+        }
+
+		MenuTitle
+		{
+			ControlName				Label
+			InheritProperties		MenuTitle
+			labelText				""
+		}
+
+		ImgTopBar
+		{
+			ControlName				ImagePanel
+			InheritProperties		MenuTopBar
+		}
+
+		MatchmakingStatus
+		{
+			ControlName				CNestedPanel
+			xpos					0
+			ypos					0
+			wide					f0
+			tall					f0
+			visible					1
+			controlSettingsFile		"resource/ui/menus/panels/matchmaking_status.res"
+		}
+
+	    CreditsAvailable
+	    {
+	        ControlName             RuiPanel
+	        InheritProperties       Label
+			labelText				"Placeholder"
+	    }
+		DarkenBackground
+		{
+			ControlName				Label
+			xpos					0
+			ypos					0
+			wide					%100
+			tall					%100
+			labelText				""
+			bgcolor_override		"0 0 0 240"
+			visible					1
+			paintbackground			1
+		}
+		///////////////////////////Map images/////////////////////////////////////////
+		MapPanelLeft
+		{
+			ControlName CNestedPanel
+			wide 286
+			tall 165
+			xpos 20
+			ypos %30
+			
+			Classname MapGridInfo
+			scriptID 1
+			
+			controlSettingsFile "resource/ui/menus/panels/FCmap_grid_button.res"
+		}
+		MapPanelTopLeft
+		{
+			ControlName CNestedPanel
+			wide 286
+			tall 165
+			xpos %20
+			ypos %15
+			
+			Classname MapGridInfo
+			scriptID 2
+			
+			controlSettingsFile "resource/ui/menus/panels/FCmap_grid_button.res"
+		}
+		MapPanelBottomLeft
+		{
+			ControlName CNestedPanel
+			wide 286
+			tall 165
+			xpos %20
+			ypos %45
+			
+			Classname MapGridInfo
+			scriptID 3
+			
+			controlSettingsFile "resource/ui/menus/panels/FCmap_grid_button.res"
+		}
+		MapPanelBottomRight
+		{
+			ControlName CNestedPanel
+			wide 286
+			tall 165
+			xpos %40
+			ypos %15
+			
+			Classname MapGridInfo
+			scriptID 4
+			
+			controlSettingsFile "resource/ui/menus/panels/FCmap_grid_button.res"
+		}
+		MapPanelTopRight
+		{
+			ControlName CNestedPanel
+			wide 286
+			tall 165
+			xpos %40
+			ypos %45
+			
+			Classname MapGridInfo
+			scriptID 5
+			
+			controlSettingsFile "resource/ui/menus/panels/FCmap_grid_button.res"
+		}
+		MapPanelRight
+		{
+			ControlName CNestedPanel
+			wide 286
+			tall 165
+			xpos %60
+			ypos %30
+			
+			Classname MapGridInfo
+			scriptID 6
+			
+			controlSettingsFile "resource/ui/menus/panels/FCmap_grid_button.res"
+		}
+		///////////////////////////Map buttons/////////////////////////////////////////
+		MapButtonLeft
+		{
+			ControlName RuiButton
+			InheritProperties RuiSmallButton
+			wide 286
+			tall 165
+			
+			Classname MapGridButtons
+			scriptID 1
+			
+			pin_to_sibling MapPanelLeft
+			pin_corner_to_sibling TOP_LEFT
+			pin_to_sibling_corner TOP_LEFT
+
+			navDown MapButtonBottomLeft
+			navRight MapButtonTopLeft
+			navUp MapButtonTopLeft
+		}
+		MapButtonTopLeft
+		{
+			ControlName RuiButton
+			InheritProperties RuiSmallButton
+			wide 286
+			tall 165
+			
+			Classname MapGridButtons
+			scriptID 2
+			
+			pin_to_sibling MapPanelTopLeft
+			pin_corner_to_sibling TOP_LEFT
+			pin_to_sibling_corner TOP_LEFT
+
+			navLeft MapButtonLeft
+			navDown MapButtonBottomLeft
+			navRight MapButtonTopRight
+		}
+		MapButtonBottomLeft
+		{
+			ControlName RuiButton
+			InheritProperties RuiSmallButton
+			wide 286
+			tall 165
+			
+			Classname MapGridButtons
+			scriptID 3
+			
+			pin_to_sibling MapPanelBottomLeft
+			pin_corner_to_sibling TOP_LEFT
+			pin_to_sibling_corner TOP_LEFT
+
+			navLeft MapButtonLeft
+			navRight MapButtonTopRight
+			navUp MapButtonTopLeft
+		}
+
+
+
+
+		MapButtonBottomRight
+		{
+			ControlName RuiButton
+			InheritProperties RuiSmallButton
+			wide 286
+			tall 165
+			
+			Classname MapGridButtons
+			scriptID 4
+			
+			pin_to_sibling MapPanelBottomRight
+			pin_corner_to_sibling TOP_LEFT
+			pin_to_sibling_corner TOP_LEFT
+
+			navLeft MapButtonBottomLeft
+			navRight MapButtonRight
+			navUp MapButtonTopRight
+		}
+		MapButtonTopRight
+		{
+			ControlName RuiButton
+			InheritProperties RuiSmallButton
+			wide 286
+			tall 165
+			
+			Classname MapGridButtons
+			scriptID 5
+			
+			pin_to_sibling MapPanelTopRight
+			pin_corner_to_sibling TOP_LEFT
+			pin_to_sibling_corner TOP_LEFT
+
+			navLeft MapButtonTopLeft
+			navDown MapButtonBottomRight
+			navRight MapButtonRight
+		}
+		MapButtonRight
+		{
+			ControlName RuiButton
+			InheritProperties RuiSmallButton
+			wide 286
+			tall 165
+			
+			Classname MapGridButtons
+			scriptID 6
+			
+			pin_to_sibling MapPanelRight
+			pin_corner_to_sibling TOP_LEFT
+			pin_to_sibling_corner TOP_LEFT
+
+			navLeft MapButtonTopRight
+			navDown MapButtonBottomRight
+			navUp MapButtonTopRight
+		}
+
+		//Map borders
+
+		
+    }
+}

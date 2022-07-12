@@ -1,0 +1,70 @@
+globalize_all_functions // Most of these UIDS are generated from setinfo
+//we dont want them to persist so losing them on restart is no problem
+//Realistically its unlikely that enough different players would join to warrent a system like this but oh well
+array<string> function GetTotalUIDArray()
+{
+    array<string> output
+    output.extend(GetTotalUIDArrayOfTeam("IMC"))
+    output.extend(GetTotalUIDArrayOfTeam("Militia"))
+    return output
+}
+array<string> function GetTotalUIDArrayOfTeam(string team)
+{
+    array<string> output
+    string ConVar= "FCUIDStore"+team
+    int i = 1
+    while(TryGetConVarString(ConVar+i.tostring()).len() > 250)
+    {
+        output.extend(GetUIDArray(ConVar+i.tostring()))
+        i++
+    }
+    output.extend(GetUIDArray(ConVar+i.tostring()))
+    return output
+}
+array<string> function GetUIDArray(string convar)
+{
+    try{
+        return split(GetConVarString(convar),",")
+    }
+    catch (ex)
+    {
+        return []
+    }
+    return []
+}
+string function TryGetConVarString(string ConVar)
+{
+    try{
+       return GetConVarString(ConVar)
+    }
+    catch (ex)
+    {
+        return ""
+    }
+    return ""
+}
+bool function TrySetConVarString(string ConVar, string Value)
+{
+    try{
+        SetConVarString(ConVar, Value)
+        return true
+    }
+    catch (ex)
+    {
+        return false
+    }
+    return false
+}
+void function FCPersit_AddTempUIDPersist(string UID, string team)
+{
+    string value = ""
+    string ConVar= "FCUIDStore"+team
+    int i = 1
+    while(TryGetConVarString(ConVar+i.tostring()).len() > 250)
+    {
+        i++
+    }
+    value = TryGetConVarString(ConVar+i.tostring()) + ","+UID
+    if(!TrySetConVarString(ConVar+i.tostring(), value))
+        print("FUCKINGAAAAAAAAAA")
+}

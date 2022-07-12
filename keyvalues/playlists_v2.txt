@@ -1,0 +1,125 @@
+playlists
+{
+    Gamemodes
+    {
+		RaidLobby
+		{
+			inherit defaults
+			vars
+			{
+				name #PL_RAID_LOBBY
+				lobbytitle #PL_RAIDS
+				description #PL_RAID_LOBBY_DESC
+				hint #PL_RAID_LOBBY_HINT
+				abbreviation #PL_RAID_ABV
+				image ffa
+				at_turrets_enabled 0
+				max_players 16
+				max_teams 2
+				scorelimit 999
+				classic_mp 0
+				boosts_enabled 1 
+				gamemode_score_hint #GAMEMODE_SCORE_HINT_RAID_LOBBY
+			}
+        }
+        FrontierControlPush
+		{
+			inherit defaults
+			vars
+			{
+				name #FC_PUSH_NAME
+				lobbytitle #FC_PUSH_TITLE
+				description #FC_PUSH_DESC
+				hint #FC_PUSH_HINT
+				abbreviation #FC_PUSH_ABV
+				image aitdm
+				at_turrets_enabled 0
+				max_players 16
+				max_teams 2
+				scorelimit 100000
+				classic_mp 1
+				boosts_enabled 0
+				gamemode_score_hint #GAMEMODE_SCORE_HINT_FC_PUSH
+			}
+        }
+    }
+    Playlists
+    {
+        RaidLobby
+		{
+			inherit defaults
+			vars
+			{
+				name #PL_RAID_LOBBY
+				lobbytitle #PL_RAIDS
+				description #PL_RAID_LOBBY_DESC
+				hint #PL_RAID_LOBBY_HINT
+				abbreviation #PL_RAID_ABV
+				image ffa
+				at_turrets_enabled 0
+				max_players 16
+				max_teams 2
+				scorelimit 999
+				classic_mp 0
+				boosts_enabled 1
+				gamemode_score_hint #GAMEMODE_SCORE_HINT_RAID_LOBBY
+			}	
+			gamemodes
+			{
+				RaidsLobby
+				{
+					maps
+					{
+						mp_lf_township 1
+					}
+				}
+			}
+		}
+		FrontierControlPush
+		{
+			inherit defaults
+			vars
+			{
+				name #FC_PUSH_NAME
+				lobbytitle #FC_PUSH_TITLE
+				description #FC_PUSH_DESC
+				hint #FC_PUSH_HINT
+				abbreviation #FC_PUSH_ABV
+				image aitdm
+				at_turrets_enabled 0
+				max_players 16
+				max_teams 2
+				scorelimit 100000
+				classic_mp 1
+				boosts_enabled 0
+
+				gamemode_score_hint #GAMEMODE_SCORE_HINT_RAID_LOBBY
+			}	
+			gamemodes
+			{
+				FrontierControlPush
+				{
+					maps
+					{
+						mp_forwardbase_kodai
+						mp_grave
+						mp_homestead
+						mp_thaw
+						mp_black_water_canal
+						mp_eden
+						mp_drydock
+						mp_crashsite3
+						mp_complex3
+						mp_angel_city
+						mp_colony02	
+						mp_relic02
+						mp_glitch
+						mp_coliseum_column
+						mp_wargames
+						mp_rise
+					}
+				}
+			}
+		}
+    }
+}

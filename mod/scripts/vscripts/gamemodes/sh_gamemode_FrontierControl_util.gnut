@@ -1,0 +1,184 @@
+globalize_all_functions
+struct {
+    array<string> maps
+}file
+const FRIENDLY = 1 //SERVERSIDE TEAM 1 = IMC
+const HOSTILE = 0 //SERVERSODE TEAM 0 = 
+//No longer use this, use GetTeam() on ui instead of player.GetTeam()
+global const int FCGamestate_prematch = 0
+global const int FCGamestate_playing = 1
+global const int FCGamestate_intermission =2
+global const int FCGamestate_postgame = 3
+global const LEFT = 1
+global const TOPLEFT = 2
+global const BOTTOMLEFT = 3
+global const BOTTOMRIGHT = 4 //Bottom and top are actually backwards lol
+global const TOPRIGHT = 5
+global const RIGHT = 6
+void function FCDev_ResetConVars()
+{
+    SetConVarInt("FCMap1", 0)
+    SetConVarInt("FCMap2", 1)
+    SetConVarInt("FCMap3", 2)
+    SetConVarInt("FCMap4", 3)
+    SetConVarInt("FCMap5", 4)
+    SetConVarInt("FCMap6", 5)
+    SetConVarInt("FCMap1Owner", TEAM_MILITIA)
+    SetConVarInt("FCMap2Owner", TEAM_MILITIA)
+    SetConVarInt("FCMap3Owner", TEAM_MILITIA)
+    SetConVarInt("FCMap4Owner", TEAM_IMC)
+    SetConVarInt("FCMap5Owner", TEAM_IMC)
+    SetConVarInt("FCMap6Owner", TEAM_IMC)
+    SetConVarInt("FCgamestate", FCGamestate_intermission)
+    SetConVarInt("FCTeaminitiative", TEAM_MILITIA)
+}
+void function FCRestartMatch() //TODO
+{
+    FCDev_ResetConVars()
+}
+void function FCDev_GetConVars()
+{
+    print(GetConVarInt("FCMap1"))
+    print(GetConVarInt("FCMap2"))
+    print(GetConVarInt("FCMap3"))
+    print(GetConVarInt("FCMap4"))
+    print(GetConVarInt("FCMap5"))
+    print(GetConVarInt("FCMap6"))
+    print(GetConVarInt("FCMap1Owner"))
+    print(GetConVarInt("FCMap2Owner"))
+    print(GetConVarInt("FCMap3Owner"))
+    print(GetConVarInt("FCMap4Owner"))
+    print(GetConVarInt("FCMap5Owner"))
+    print(GetConVarInt("FCMap6Owner"))
+    print(GetConVarInt("FCgamestate"))
+    print(GetConVarInt("FCTeaminitiative"))
+}
+void function FrontierControlUtilInit()
+{
+    file.maps.extend(GetPrivateMatchMaps() )
+}
+string function FC_GetMap(int map)//Now that i can pass strings i could just not do this but i dont wanna rewrite everything again
+{
+    return file.maps[map]
+}
+void function FC_SetGameState(int state)
+{
+    SetConVarInt("FCgamestate", state)
+}
+#if UI
+//My hatred for anything todo with network stuff knows no bounds, why do i even keep these clientside?
+//Fuck this is so shit why am i doing this
+//Turns out i can pass strings, im not rewriting this and you cant make me.
+void function FCSetMap6(int element)
+{
+    SetConVarInt("FCmap6", element)
+}
+void function FCSetMap5(int element)
+{
+    SetConVarInt("FCmap5", element)
+}
+void function FCSetMap4(int element)
+{
+    SetConVarInt("FCmap4", element)
+}
+void function FCSetMap3(int element)
+{
+    SetConVarInt("FCmap3", element)
+}
+void function FCSetMap2(int element)
+{
+    SetConVarInt("FCmap2", element)
+}
+void function FCSetMap1(int element)
+{
+    SetConVarInt("FCmap1", element)
+}
+void function FCSetMapOwner(int map, int owner)
+{
+    SetConVarInt("FCmap"+map+"Owner", owner)
+}
+//void function FC_SetMapHostile(int element)
+//{
+//    SetConVarInt("FCmap"+element+"Owner", HOSTILE)
+//    OnOpenFWMapsMenu()
+//}
+//void function FC_SetMapFriendly(int element)
+//{
+//    SetConVarInt("FCmap"+element+"Owner", FRIENDLY)
+//    OnOpenFWMapsMenu()
+//}
+bool function HasValidAttackPath(int index)
+{
+    if(GetConVarInt("FCmap"+index+"Owner") == GetTeam())
+        return false
+    switch(index) // i honestly give up on thinking of better ways to do this
+    {
+        case LEFT:
+            return(GetConVarInt("FCmap2Owner")==GetTeam() 
+            || GetConVarInt("FCmap3Owner") == GetTeam()) //topleft and bottomleft
+        case BOTTOMLEFT:
+            return(GetConVarInt("FCmap5Owner")==GetTeam()
+            || GetConVarInt("FCmap1Owner") == GetTeam()) //topright and left
+        case TOPLEFT:
+            return(GetConVarInt("FCmap4Owner")== GetTeam()
+            || GetConVarInt("FCmap1Owner") == GetTeam())   //bottomright and left
+        case TOPRIGHT:       
+            return(GetConVarInt("FCmap3Owner")==GetTeam()
+            || GetConVarInt("FCmap6Owner") == GetTeam())  //Right and bottomleft
+        case BOTTOMRIGHT:
+            return(GetConVarInt("FCmap2Owner")==GetTeam() 
+            || GetConVarInt("FCmap6Owner") == GetTeam()) // Right and topleft  
+        case RIGHT:
+            return(GetConVarInt("FCmap4Owner")==GetTeam() 
+            || GetConVarInt("FCmap5Owner") == GetTeam()) // Topright and bottomright
+    }
+    return true
+}
+#endif
+#if SERVER
+bool function HasValidAttackPath(int index, int Team )
+{
+    if(GetConVarInt("FCmap"+index+"Owner") == Team)
+        return false
+    switch(index) // i honestly give up on thinking of better ways to do this
+    {
+        case LEFT:
+            return(GetConVarInt("FCmap2Owner")==Team 
+            || GetConVarInt("FCmap3Owner") == Team) //topleft and bottomleft
+        case BOTTOMLEFT:
+            return(GetConVarInt("FCmap5Owner")==Team
+            || GetConVarInt("FCmap1Owner") == Team) //topright and left
+        case TOPLEFT:
+            return(GetConVarInt("FCmap4Owner")== Team
+            || GetConVarInt("FCmap1Owner") == Team)   //bottomright and left
+        case TOPRIGHT:       
+            return(GetConVarInt("FCmap3Owner")==Team
+            || GetConVarInt("FCmap6Owner") == Team)  //Right and bottomleft
+        case BOTTOMRIGHT:
+            return(GetConVarInt("FCmap2Owner")==Team 
+            || GetConVarInt("FCmap6Owner") == Team) // Right and topleft  
+        case RIGHT:
+            return(GetConVarInt("FCmap4Owner")==Team 
+            || GetConVarInt("FCmap5Owner") == Team) // Topright and bottomright
+    }
+    return true
+}
+int function FindValidAttackPath(entity player)
+{
+    for(int i = 1; i<=6;i++)
+    {
+        if(HasValidAttackPath(i, player.GetTeam()))
+            return i
+    }
+    return -1
+}
+int function FindValidAttackPathForTeam(int Team)
+{
+    for(int i = 1; i<=6;i++)
+    {
+        if(HasValidAttackPath(i, Team))
+            return i
+    }
+    return -1
+}
+#endif

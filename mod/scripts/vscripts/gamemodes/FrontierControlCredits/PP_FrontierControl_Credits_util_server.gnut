@@ -1,0 +1,78 @@
+globalize_all_functions
+#if SERVER
+void function ValidatePlayerCreditsVar(entity player)
+{
+    string UID = player.GetUID()
+    string Var = FCGetCreditVarString(player)
+    try{
+        print(GetConVarString(Var))
+    }
+    catch (ex)
+    {
+        ServerCommand ("setinfo " + Var +" 0") //Generates serverside temporary convar for storing credits
+        int teamid = player.GetTeam()
+        string team
+        if(teamid == TEAM_IMC)
+            team = "IMC"
+        else if(teamid == TEAM_MILITIA)
+            team = "Militia"
+        FCPersit_AddTempUIDPersist(UID, team)
+    }
+}//TODO Need constant convar to track all used uids, convar string cap may be an issue though
+//Remember to purge every restart
+/////Most of these try catches should no longer apply, connect callback checkes this
+int function FCGetCredits(entity player, bool failed = false)
+{
+    string UID = player.GetUID()
+    string Var = FCGetCreditVarString(player)
+    try{
+        return GetConVarInt(Var)
+    }
+    catch (ex)
+    {
+        if(failed)
+            throw "fuck, thats not good, UID is "+UID 
+        else
+            ServerCommand ("setinfo " + Var +" 0")
+    }
+    return FCGetCredits(player, true)
+}
+bool function FCGiveCredits(entity player, int num, bool failed = false)
+{
+    string UID = player.GetUID()
+    string Var = FCGetCreditVarString(player)
+    //try{
+        SetConVarInt(Var, FCGetCredits(player)+num)
+        return true
+    //}
+    //catch (ex)
+    //{
+    //    if(failed)
+    //        throw "fuck, thats not good,GiveCredits, UID is "+UID 
+    //    else
+    //        ServerCommand ("setinfo " + "FCTempCreditVar"+UID +" "+num)
+    //}
+    //return FCGiveCredits(player, num, true)
+}
+bool function FCTakeCredits(entity player, int num, bool failed = false)
+{
+    string UID = player.GetUID()
+    string Var = FCGetCreditVarString(player)
+    try{
+        SetConVarInt(Var, FCGetCredits(player)-num)
+        return true
+    }
+    catch (ex)
+    {
+        if(failed)
+            throw "fuck, thats not good,TakeCredits, UID is "+UID 
+        else
+            ServerCommand ("setinfo " + Var +" 0")
+    }
+    return FCTakeCredits(player, num, true)
+}
+string function FCGetCreditVarString(entity player)
+{
+    return ("FCTempCreditVarTeam"+player.GetTeam()+"ID"+player.GetUID())
+}
+#endif

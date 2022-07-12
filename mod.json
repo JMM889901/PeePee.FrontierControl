@@ -1,0 +1,161 @@
+{
+	"Name" : "FrontierControl",
+	"Description" : "Im going to hate making this",
+	"Version": "0.1",
+	"LoadPriority": 2,
+    "RequiredOnClient": true,
+    "Scripts": [
+
+        {
+            "Path": "gamemodes/_gamemode_FrontierControlLobby.gnut",
+            "RunOn": "SERVER"
+        },
+        {
+            "Path": "gamemodes/cl_gamemode_FrontierControlLobby.gnut",
+            "RunOn": "CLIENT"
+        },
+        {
+            "Path": "ui/FrontierControlUIScripts.gnut",
+            "RunOn": "UI",
+            "UICallback": {
+                "Before": "RaidsStartupUi"
+            }
+        },
+        {
+            "Path": "ui/MapMenu.gnut",
+            "RunOn": "UI"
+        },
+        {
+            "Path": "gamemodes/sh_gamemode_FrontierControlLobby.gnut",
+            "RunOn": "SERVER || CLIENT",
+            "ServerCallback": {
+                "Before": "RAID_LOBBY_MODE_Init"
+            },
+            "ClientCallback": {
+                "Before": "RAID_LOBBY_MODE_Init"
+            }
+        },
+        {
+            "Path": "gamemodes/sh_gamemode_FrontierControl_util.gnut",
+            "RunOn": "SERVER || CLIENT || UI",
+            "ServerCallback": {
+                "Before": "FrontierControlUtilInit"
+            },
+            "UICallback": {
+                "Before": "FrontierControlUtilInit"
+            },
+            "ClientCallback": {
+                "Before": "FrontierControlUtilInit"
+            }
+        },
+        {
+			"Path": "gamemodes//FrontierControlPush/PP_Gamemode_FrontierControlPush.gnut",
+			"RunOn": "CLIENT || SERVER",
+			"ClientCallback": {
+				"After": "PP_HarvesterPush_init"
+			},
+
+			"ServerCallback": {
+				"After": "PP_HarvesterPush_init"
+			}
+		},
+        {
+			"Path": "gamemodes//FrontierControlCredits/PP_FrontierControl_Credits_util_server.gnut",
+			"RunOn": "CLIENT || SERVER"
+		},
+        {
+			"Path": "gamemodes//FrontierControlCredits/PP_FrontierControl_Credits_UIDPersist_Util.gnut",
+			"RunOn": "CLIENT || SERVER"
+		},
+        {
+			"Path": "gamemodes//FrontierControlPush/PP_Gamemode_FrontierControlPush_Util.gnut",
+			"RunOn": "SERVER"
+		},
+		{
+			"Path": "gamemodes/FrontierControlPush/PP_Gamemode_FrontierControlPush_AI.gnut",
+			"RunOn": "SERVER"
+		}
+    ],
+    "ConVars": [
+        {
+            "Name": "FCmap1",
+            "DefaultValue": "0"
+        },
+        {
+            "Name": "FCmap2",
+            "DefaultValue": "1"
+        },
+        {
+            "Name": "FCmap3",
+            "DefaultValue": "2"
+        },
+        {
+            "Name": "FCmap4",
+            "DefaultValue": "3"
+        },
+        {
+            "Name": "FCmap5",
+            "DefaultValue": "4"
+        },
+        {
+            "Name": "FCmap6",
+            "DefaultValue": "5"
+        },
+        {
+            "Name": "FCMap1Owner",
+            "DefaultValue": "3"
+        },
+        {
+            "Name": "FCmap2Owner",
+            "DefaultValue": "3"
+        },
+        {
+            "Name": "FCmap3Owner",
+            "DefaultValue": "2"
+        },
+        {
+            "Name": "FCmap4Owner",
+            "DefaultValue": "2"
+        },
+        {
+            "Name": "FCmap5Owner",
+            "DefaultValue": "2"
+        },
+        {
+            "Name": "FCmap6Owner",
+            "DefaultValue": "2"
+        },
+        {
+            "Name": "FCgamestate",
+            "DefaultValue": "2"
+        },
+        {
+            "Name": "FCTeaminitiative",
+            "DefaultValue": "3"
+        },
+        {
+            "Name": "FCSelectedIndex",
+            "DefaultValue": "0"
+        },//Pain pain pain
+        {//Each of these convars should store at most 250 characters
+            "Name": "FCUIDStoreIMC1",
+            "DefaultValue": ""
+        },
+        {
+            "Name": "FCUIDStoreIMC2",
+            "DefaultValue": ""
+        },
+        {
+            "Name": "FCUIDStoreMilitia1",
+            "DefaultValue": ""
+        },
+        {
+            "Name": "FCUIDStoreMilitia2",
+            "DefaultValue": ""
+        }
+    ],
+	"Localisation": [
+		"resource/FrontierControl_localisation_%language%.txt"
+	]
+}
+
