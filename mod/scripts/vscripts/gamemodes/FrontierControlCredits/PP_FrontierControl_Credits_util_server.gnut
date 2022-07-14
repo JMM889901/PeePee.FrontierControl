@@ -18,8 +18,8 @@ void function ValidatePlayerCreditsVar(entity player)
             team = "Militia"
         FCPersit_AddTempUIDPersist(UID, team)
     }
-}//TODO Need constant convar to track all used uids, convar string cap may be an issue though
-//Remember to purge every restart
+}//TODO Need constant convar to track all used uids, convar string cap may be an issue though <-- this is done through FCPersit_AddTempUIDPersist
+//Remember to purge every restart  <-- still needs doing
 /////Most of these try catches should no longer apply, connect callback checkes this
 int function FCGetCredits(entity player, bool failed = false)
 {

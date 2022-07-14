@@ -71,6 +71,24 @@
 			"Path": "gamemodes//FrontierControlPush/PP_Gamemode_FrontierControlPush_Util.gnut",
 			"RunOn": "SERVER"
 		},
+        {
+			"Path": "gamemodes//FrontierControlGeneralGamemodeSupport/PP_FrontierControl_GeneralGamemodeCallbacks.gnut",
+			"RunOn": "SERVER",
+			"ServerCallback": {
+				"After": "FCGeneralCallbacksInit"
+			}
+		},
+        {
+			"Path": "gamemodes//FrontierControlStore/PP_FrontierControl_Store_Util.gnut",
+			"RunOn": "UI",
+			"UICallback": {
+				"After": "FCStoreInit"
+			}
+		},
+        {
+			"Path": "gamemodes//FrontierControlStore/PP_FrontierControl_Store_Boosts.gnut",
+			"RunOn": "UI"
+		},
 		{
 			"Path": "gamemodes/FrontierControlPush/PP_Gamemode_FrontierControlPush_AI.gnut",
 			"RunOn": "SERVER"
@@ -100,6 +118,30 @@
         {
             "Name": "FCmap6",
             "DefaultValue": "5"
+        },
+        {
+            "Name": "FCmap1Mode",
+            "DefaultValue": "FrontierControlPush"
+        },
+        {
+            "Name": "FCmap2Mode",
+            "DefaultValue": "FrontierControlPush"
+        },
+        {
+            "Name": "FCmap3Mode",
+            "DefaultValue": "FrontierControlPush"
+        },
+        {
+            "Name": "FCmap4Mode",
+            "DefaultValue": "FrontierControlPush"
+        },
+        {
+            "Name": "FCmap5Mode",
+            "DefaultValue": "FrontierControlPush"
+        },
+        {
+            "Name": "FCmap6Mode",
+            "DefaultValue": "FrontierControlPush"
         },
         {
             "Name": "FCMap1Owner",
@@ -132,6 +174,10 @@
         {
             "Name": "FCTeaminitiative",
             "DefaultValue": "3"
+        },
+        {
+            "Name": "FCShouldInit",
+            "DefaultValue": "0"
         },
         {
             "Name": "FCSelectedIndex",

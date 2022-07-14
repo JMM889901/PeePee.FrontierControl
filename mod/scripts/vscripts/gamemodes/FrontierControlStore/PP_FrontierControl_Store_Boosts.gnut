@@ -1,0 +1,10 @@
+// script PlayerEarnMeter_AddEarnedAndOwned(GetPlayerArray()[0], 0, 1)
+
+global function FCInitBoostMenu
+//global function FCServerCallback_OpenBoostMenu
+//global function FCOnOpenBoostMenu
+
+void function FCInitBoostMenu()
+{
+
+}

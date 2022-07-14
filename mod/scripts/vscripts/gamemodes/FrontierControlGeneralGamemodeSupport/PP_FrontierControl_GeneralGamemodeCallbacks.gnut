@@ -1,0 +1,25 @@
+untyped
+globalize_all_functions
+void function FCGeneralCallbacksInit()
+{
+    if(GetConVarInt("FCShouldInit") != 1)
+        return
+    SetConVarInt("FCShouldInit", 0)
+    //GameScore_GetWinningTeam()
+    FC_SetGameState(FCGamestate_playing)
+    Riff_ForceBoostAvailability( eBoostAvailability.Disabled )//cat_or_not my beloved
+    AddCallback_GameStateEnter( eGameState.Postmatch, FCGeneralCallbackGameEnded )
+    //GetPlaylistVarOrUseValue( GAMETYPE, "scorelimit", "" )
+}
+void function FCGeneralCallbackGameEnded()
+{
+    int Initiative = GetConVarInt("FCTeaminitiative")
+    if(Initiative == TEAM_IMC)
+        SetConVarInt("FCTeaminitiative", TEAM_MILITIA)
+    else if (Initiative == TEAM_MILITIA)
+        SetConVarInt("FCTeaminitiative", TEAM_IMC)
+    FC_SetGameState(FCGamestate_intermission)
+    int TargetIndex = GetConVarInt("FCSelectedIndex")
+    SetConVarInt("FCmap"+TargetIndex+"Owner", GameScore_GetWinningTeam())
+    GameRules_ChangeMap("mp_lf_township", GAMEMODE_RAIDLOBBY /*"FrontierControl*/)
+}

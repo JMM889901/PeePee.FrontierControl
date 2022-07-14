@@ -1,0 +1,5 @@
+global function FCStoreInit
+void function FCStoreInit()
+{
+    AddMenu( "FCBoostStore", $"resource/ui/menus/FCBoostStore.menu", FCInitBoostMenu )
+}

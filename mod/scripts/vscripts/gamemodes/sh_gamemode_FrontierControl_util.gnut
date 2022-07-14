@@ -1,6 +1,27 @@
 globalize_all_functions
+#if UI
+global const string GAMEMODE_RAIDLOBBY = "RaidLobby" //:Clueless:
+global const string GAMEMODE_FCPUSH = "FrontierControlPush"
+#endif
 struct {
-    array<string> maps
+    array<string> maps = [
+        "mp_forwardbase_kodai",
+        "mp_grave",
+        "mp_homestead",
+        "mp_thaw",
+        "mp_black_water_canal",
+        "mp_eden",
+        "mp_drydock",
+        "mp_crashsite3",
+        "mp_complex3",
+        "mp_angel_city",
+        "mp_colony02",
+        "mp_relic02",
+        "mp_glitch",
+        "mp_wargames",
+        "mp_rise",
+    ]
+    array<string> gameModes = ["tdm", "aitdm", "ctf", "ttdm", GAMEMODE_FCPUSH, "cp", "ps"]
 }file
 const FRIENDLY = 1 //SERVERSIDE TEAM 1 = IMC
 const HOSTILE = 0 //SERVERSODE TEAM 0 = 
@@ -31,10 +52,56 @@ void function FCDev_ResetConVars()
     SetConVarInt("FCMap6Owner", TEAM_IMC)
     SetConVarInt("FCgamestate", FCGamestate_intermission)
     SetConVarInt("FCTeaminitiative", TEAM_MILITIA)
+    SetConVarInt("FCMap1Mode", 4)
+    SetConVarInt("FCMap2Mode", 4)
+    SetConVarInt("FCMap3Mode", 4)
+    SetConVarInt("FCMap4Mode", 4)
+    SetConVarInt("FCMap5Mode", 4)
+    SetConVarInt("FCMap6Mode", 4)
+}
+void function FCAddMap(string map) //Haha lmao like thats ever gonna happen
+{
+    file.maps.append(map)
+}
+void function FCAddGamemode(string gamemode)
+{
+    file.gameModes.append(gamemode)
 }
 void function FCRestartMatch() //TODO
 {
-    FCDev_ResetConVars()
+    SetRandomMaps()    
+    SetConVarInt("FCMap1Mode", FCGetRandomMode())
+    SetConVarInt("FCMap2Mode", FCGetRandomMode())
+    SetConVarInt("FCMap3Mode", FCGetRandomMode())
+    SetConVarInt("FCMap4Mode", FCGetRandomMode())
+    SetConVarInt("FCMap5Mode", FCGetRandomMode())
+    SetConVarInt("FCMap6Mode", FCGetRandomMode())
+    SetConVarInt("FCMap1Owner", TEAM_MILITIA)
+    SetConVarInt("FCMap2Owner", TEAM_MILITIA)
+    SetConVarInt("FCMap3Owner", TEAM_MILITIA)
+    SetConVarInt("FCMap4Owner", TEAM_IMC)
+    SetConVarInt("FCMap5Owner", TEAM_IMC)
+    SetConVarInt("FCMap6Owner", TEAM_IMC)
+    SetConVarInt("FCgamestate", FCGamestate_intermission)
+    SetConVarInt("FCTeaminitiative", TEAM_MILITIA)
+}
+void function SetRandomMaps()
+{ 
+    array<string> CurMaps = clone file.maps
+    for(int i = 1; i<7; i++)
+    {
+        string Choice = CurMaps[RandomInt(CurMaps.len())]
+        SetConVarInt( "FCMap"+i, file.maps.find( Choice ) )
+        CurMaps.fastremovebyvalue(Choice)
+    }
+}
+int function FCGetRandomMap()
+{
+    return RandomInt(file.maps.len())
+}
+int function FCGetRandomMode()
+{
+    return RandomInt(file.gameModes.len())
 }
 void function FCDev_GetConVars()
 {
@@ -55,11 +122,15 @@ void function FCDev_GetConVars()
 }
 void function FrontierControlUtilInit()
 {
-    file.maps.extend(GetPrivateMatchMaps() )
+    //file.maps.extend(GetPrivateMatchMaps() )
 }
 string function FC_GetMap(int map)//Now that i can pass strings i could just not do this but i dont wanna rewrite everything again
 {
     return file.maps[map]
+}
+string function FC_GetMode(int map)//Now that i can pass strings i could just not do this but i dont wanna rewrite everything again
+{
+    return file.gameModes[map]
 }
 void function FC_SetGameState(int state)
 {

@@ -16,7 +16,7 @@ playlists
 				at_turrets_enabled 0
 				max_players 16
 				max_teams 2
-				scorelimit 999
+				//scorelimit 250
 				classic_mp 0
 				boosts_enabled 1 
 				gamemode_score_hint #GAMEMODE_SCORE_HINT_RAID_LOBBY
@@ -59,7 +59,7 @@ playlists
 				at_turrets_enabled 0
 				max_players 16
 				max_teams 2
-				scorelimit 999
+				//scorelimit 250
 				classic_mp 0
 				boosts_enabled 1
 				gamemode_score_hint #GAMEMODE_SCORE_HINT_RAID_LOBBY

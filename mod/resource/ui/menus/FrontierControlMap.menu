@@ -259,6 +259,291 @@ resource/ui/menus/FrontierControlMap.menu
 
 		//Map borders
 
-		
+		/////////////Gamemode info/////////////////
+
+
+		NextModeImageFrame
+        {
+            ControlName				RuiPanel
+			xpos 					0
+			ypos					%70
+			wide					%100
+			tall					240
+            labelText				""
+            visible				    1
+            bgcolor_override        "0 0 0 0"
+            paintbackground         1
+            rui                     "ui/basic_border_box.rpak"
+        }
+
+		NextModeImage
+		{
+			ControlName				RuiPanel
+			pin_to_sibling			NextModeImageFrame
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_LEFT
+//			xpos                    0
+			ypos                    0
+			wide					480
+			tall					240
+			visible					1
+			scaleImage				1
+            rui                     "ui/basic_menu_image.rpak"
+			zpos					2
+		}
+
+		ModeIconImage
+		{
+			ControlName				RuiPanel
+			pin_to_sibling			NextModeImage
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_LEFT
+			xpos                    0
+			ypos                    -16
+			wide					72
+			tall					72
+			visible					1
+			scaleImage				1
+            rui                     "ui/basic_image_add.rpak"
+			zpos					2
+		}
+
+		NextModeName
+		{
+			ControlName				Label
+			pin_to_sibling			NextModeImage
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	TOP_RIGHT
+			ypos					0
+			//wide                    840
+			tall 					70
+			//auto_wide_tocontents	1
+			wide					450
+			//auto_tall_tocontents	1
+			visible					1
+			labelText				"Foo"
+			textAlignment           center
+			centerWrap              1
+			font					Default_43_DropShadow
+			allcaps					1
+			fgcolor_override		"255 255 255 255"
+		}
+
+		NextModeDesc
+		{
+			ControlName				Label
+			pin_to_sibling			NextModeName
+			pin_corner_to_sibling	TOP_LEFT
+			pin_to_sibling_corner	BOTTOM_LEFT
+			xpos					0
+			ypos					0
+			wide					840
+			wrap					0.99
+			//auto_tall_tocontents	1
+			tall 					170
+			wide					1200
+			visible					1
+			labelText				"Bar"
+			textAlignment           center
+			centerWrap              1
+			font					Default_27
+			allcaps					0
+			fgcolor_override		"255 255 255 255"
+		}
+
+	//////////////////////Arrows/////////////////////////
+		LeftUpLine
+		{
+			ControlName 			ImagePanel
+			wide					5
+			tall					%7
+			//zpos					6
+			visible					1
+			pin_to_sibling			MapButtonLeft
+			drawColor				"255 255 255 255"
+			fgcolor_override 	"255 255 255 100"
+			pin_corner_to_sibling BOTTOM
+			pin_to_sibling_corner TOP
+			//image                   "ui/menu/lobby/background_box_solid"
+			//rui                     "ui/basic_border_box.rpak"
+			image					"vgui/HUD/white"
+			fillColor				"255 255 255 100"
+			//drawColor				"0 0 100 100"
+			scaleImage				1
+		}
+		LeftTopLeftLine
+		{
+			ControlName 			ImagePanel
+			wide					%11.5
+			tall					5
+			//zpos					6
+			visible					1
+			pin_to_sibling			LeftUpLine
+			drawColor				"255 255 255 255"
+			fgcolor_override 	"255 255 255 100"
+			pin_corner_to_sibling TOP_LEFT
+			pin_to_sibling_corner TOP_RIGHT
+			//image                   "ui/menu/lobby/background_box_solid"
+			//rui                     "ui/basic_border_box.rpak"
+			image					"vgui/HUD/white"
+			fillColor				"255 255 255 100"
+			//drawColor				"0 0 100 100"
+			scaleImage				1
+		}
+		LeftDownLine
+		{
+			ControlName 			ImagePanel
+			wide					5
+			tall					%7
+			//zpos					6
+			visible					1
+			pin_to_sibling			MapButtonLeft
+			drawColor				"255 255 255 255"
+			fgcolor_override 	"255 255 255 100"
+			pin_corner_to_sibling TOP
+			pin_to_sibling_corner BOTTOM
+			//image                   "ui/menu/lobby/background_box_solid"
+			//rui                     "ui/basic_border_box.rpak"
+			image					"vgui/HUD/white"
+			fillColor				"255 255 255 100"
+			//drawColor				"0 0 100 100"
+			scaleImage				1
+		}
+		LeftBottomLeftLine
+		{
+			ControlName 			ImagePanel
+			wide					%11.5
+			tall					5
+			//zpos					6
+			visible					1
+			pin_to_sibling			LeftDownLine
+			drawColor				"255 255 255 255"
+			fgcolor_override 	"255 255 255 100"
+			pin_corner_to_sibling BOTTOM_LEFT
+			pin_to_sibling_corner BOTTOM_RIGHT
+			//image                   "ui/menu/lobby/background_box_solid"
+			//rui                     "ui/basic_border_box.rpak"
+			image					"vgui/HUD/white"
+			fillColor				"255 255 255 100"
+			//drawColor				"0 0 100 100"
+			scaleImage				1
+		}
+
+		///////Middle lines/////////
+		TopLeftTopRightLine
+		{
+			ControlName 			ImagePanel
+			wide					%5
+			tall					5
+			//zpos					6
+			visible					1
+			pin_to_sibling			MapPanelTopLeft
+			drawColor				"255 255 255 255"
+			fgcolor_override 	"255 255 255 100"
+			pin_corner_to_sibling LEFT
+			pin_to_sibling_corner RIGHT
+			//image                   "ui/menu/lobby/background_box_solid"
+			//rui                     "ui/basic_border_box.rpak"
+			image					"vgui/HUD/white"
+			fillColor				"255 255 255 100"
+			//drawColor				"0 0 100 100"
+			scaleImage				1
+		}
+		BottomLeftBottomRightLine
+		{
+			ControlName 			ImagePanel
+			wide					%5
+			tall					5
+			//zpos					6
+			visible					1
+			pin_to_sibling			MapPanelBottomLeft
+			drawColor				"255 255 255 255"
+			fgcolor_override 	"255 255 255 100"
+			pin_corner_to_sibling LEFT
+			pin_to_sibling_corner RIGHT
+			//image                   "ui/menu/lobby/background_box_solid"
+			//rui                     "ui/basic_border_box.rpak"
+			image					"vgui/HUD/white"
+			fillColor				"255 255 255 100"
+			//drawColor				"0 0 100 100"
+			scaleImage				1
+		}
+		///////////Right lines
+		RightUpLine
+		{
+			ControlName 			ImagePanel
+			wide					5
+			tall					%7
+			//zpos					6
+			visible					1
+			pin_to_sibling			MapButtonRight
+			drawColor				"255 255 255 255"
+			fgcolor_override 	"255 255 255 100"
+			pin_corner_to_sibling BOTTOM
+			pin_to_sibling_corner TOP
+			//image                   "ui/menu/lobby/background_box_solid"
+			//rui                     "ui/basic_border_box.rpak"
+			image					"vgui/HUD/white"
+			fillColor				"255 255 255 100"
+			//drawColor				"0 0 100 100"
+			scaleImage				1
+		}
+		RightTopRightLine
+		{
+			ControlName 			ImagePanel
+			wide					%12
+			tall					5
+			//zpos					6
+			visible					1
+			pin_to_sibling			RightUpLine
+			drawColor				"255 255 255 255"
+			fgcolor_override 	"255 255 255 100"
+			pin_corner_to_sibling TOP_RIGHT
+			pin_to_sibling_corner TOP_LEFT
+			//image                   "ui/menu/lobby/background_box_solid"
+			//rui                     "ui/basic_border_box.rpak"
+			image					"vgui/HUD/white"
+			fillColor				"255 255 255 100"
+			//drawColor				"0 0 100 100"
+			scaleImage				1
+		}
+		RightDownLine
+		{
+			ControlName 			ImagePanel
+			wide					5
+			tall					%7
+			//zpos					6
+			visible					1
+			pin_to_sibling			MapButtonRight
+			drawColor				"255 255 255 255"
+			fgcolor_override 	"255 255 255 100"
+			pin_corner_to_sibling TOP
+			pin_to_sibling_corner BOTTOM
+			//image                   "ui/menu/lobby/background_box_solid"
+			//rui                     "ui/basic_border_box.rpak"
+			image					"vgui/HUD/white"
+			fillColor				"255 255 255 100"
+			//drawColor				"0 0 100 100"
+			scaleImage				1
+		}
+		RightBottomRightLine
+		{
+			ControlName 			ImagePanel
+			wide					%12
+			tall					5
+			//zpos					6
+			visible					1
+			pin_to_sibling			RightDownLine
+			drawColor				"255 255 255 255"
+			fgcolor_override 	"255 255 255 100"
+			pin_corner_to_sibling BOTTOM_RIGHT
+			pin_to_sibling_corner BOTTOM_LEFT
+			//image                   "ui/menu/lobby/background_box_solid"
+			//rui                     "ui/basic_border_box.rpak"
+			image					"vgui/HUD/white"
+			fillColor				"255 255 255 100"
+			//drawColor				"0 0 100 100"
+			scaleImage				1
+		}
     }
 }

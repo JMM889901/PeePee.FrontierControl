@@ -1,8 +1,6 @@
 untyped
 global function RaidsLobby_Init
 global function SendAllStartupInfo
-table<string, array<string> > ActivePlayerAllowedMods = {}
-table<string, array<string> > ActivePlayerData = {}
 void function RaidsLobby_Init(){
     SetShouldUseRoundWinningKillReplay( false )
 	ClassicMP_ForceDisableEpilogue( true )
@@ -98,7 +96,7 @@ bool function PlayerVotesForMap(entity player, array<string> args)
     int votedplayers = 0
     foreach(string key, int value in file.MapVotes)
     {
-        if(value/GetPlayerArray().len() > 0.8)
+        if(value/GetPlayerArrayOfTeam(GetConVarInt("FCTeaminitiative")).len() > 0.8)
         {
             //SetServerVar( "roundEndTime", Time()+30)
             if(GetServerVar( "gameEndTime" ) > Time()+30)
@@ -140,7 +138,12 @@ void function GameEnded()
     if(MaxKey == "")
         MaxKey = FindValidAttackPathForTeam(GetConVarInt("FCTeaminitiative")).tostring()
     SetConVarInt("FCSelectedIndex", MaxKey.tointeger())
-    GameRules_ChangeMap(FC_GetMap(GetConVarInt("FCmap"+MaxKey)), GAMEMODE_FCPUSH /*"FrontierControl*/)
+    string mode = FC_GetMode(GetConVarInt("FCMap"+MaxKey+"Mode"))
+    if(mode != GAMEMODE_FCPUSH)
+        SetConVarInt("FCShouldInit", 1)
+    //SetPlaylistVarOverride( "scorelimit", GameMode_GetScoreLimit(mode).tostring() )
+    SetCurrentPlaylist(mode)
+    GameRules_ChangeMap(FC_GetMap(GetConVarInt("FCmap"+MaxKey)), mode /*"FrontierControl*/)
 }
 
 void function OnPlayerRespawned(entity player)

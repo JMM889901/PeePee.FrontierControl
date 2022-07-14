@@ -5,23 +5,23 @@ const HOSTILE = 0
 
 global function InitMapMenu
 global function ServerCallback_OpenMap
-global function OnOpenFWMapsMenu
+global function OnOpenFCMapsMenu
 void function InitMapMenu()
 {
     //GetMapImageForMapName( map )
     //GetConVarString( "bot_titan_settings" )
     var menu = GetMenu( "FrontierControlMap" )
     array<var> Maps = GetElementsByClassname( menu, "MapGridInfo" )
-    AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenFWMapsMenu )
+    AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenFCMapsMenu )
 	//AddMenuEventHandler( menu, eUIEvent.MENU_CLOSE, OnCloseMapsMenu )
     foreach ( var button in GetElementsByClassname( menu, "MapGridButtons" ) )
 	{
 		AddButtonEventHandler( button, UIE_CLICK, VoteMap )
-        //AddButtonEventHandler( button, UIE_GET_FOCUS, DisplayInfo ) Maybe do this at some point lol
+        AddButtonEventHandler( button, UIE_GET_FOCUS, FCTileButtonOnFocus )
         //print(button)
 	}
 }
-void function OnOpenFWMapsMenu()
+void function OnOpenFCMapsMenu()
 {
     var menu = GetMenu( "FrontierControlMap" )
     array<var> Maps = GetElementsByClassname( menu, "MapGridInfo" )
@@ -91,4 +91,35 @@ void function ServerCallback_OpenMap()
 void function VoteMap(var element)
 {
     ClientCommand("!FCVoteForMap "+ Hud_GetScriptID(element))
+}
+void function FCTileButtonOnFocus( var button )
+{
+	int modeId = int( Hud_GetScriptID( button ) )
+
+	var menu = GetMenu( "FrontierControlMap" )
+	var nextModeImage = Hud_GetChild( menu, "NextModeImage" )
+	var nextModeIcon = Hud_GetChild( menu, "ModeIconImage" )
+	var nextModeName = Hud_GetChild( menu, "NextModeName" )
+	var nextModeDesc = Hud_GetChild( menu, "NextModeDesc" )
+
+	//array<string> modesArray = GetPrivateMatchModes()
+
+	//if ( modeId > modesArray.len() )
+	//	return
+
+	string modeName = FC_GetMode(GetConVarInt("FCMap"+modeId+"Mode"))
+
+	asset playlistImage = GetPlaylistImage( modeName )
+	RuiSetImage( Hud_GetRui( nextModeImage ), "basicImage", playlistImage )
+	RuiSetImage( Hud_GetRui( nextModeIcon ), "basicImage", GetPlaylistThumbnailImage( modeName ) )
+	Hud_SetText( nextModeName, GetGameModeDisplayName( modeName ) )
+
+	string mapName = PrivateMatch_GetSelectedMap()
+	bool mapSupportsMode = PrivateMatch_IsValidMapModeCombo( mapName, modeName )
+	if ( !mapSupportsMode )
+		Hud_SetText( nextModeDesc, Localize( "#PRIVATE_MATCH_MODE_NO_MAP_SUPPORT", Localize( GetGameModeDisplayName( modeName ) ), Localize( GetMapDisplayName( mapName ) ) ) )
+	else if ( IsFDMode( modeName ) ) // HACK!
+		Hud_SetText( nextModeDesc, Localize( "#FD_PLAYERS_DESC", Localize( GetGameModeDisplayHint( modeName ) ) ) )
+	else
+		Hud_SetText( nextModeDesc, GetGameModeDisplayHint( modeName ) )
 }
