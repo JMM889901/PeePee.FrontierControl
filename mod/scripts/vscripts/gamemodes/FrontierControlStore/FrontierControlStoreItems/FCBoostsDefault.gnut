@@ -1,0 +1,17 @@
+globalize_all_functions
+bool function FCIsBoostAvailable_AmpedWeapons()
+{
+    return GAMETYPE != "ttdm"
+}
+
+bool function FCIsBoostAvailable_TitanUnlock()
+{
+    return GAMETYPE != "ps"
+}
+
+void function FCBoostUseTitanUnlock(entity player)
+{
+    #if SERVER
+    PlayerEarnMeter_AddEarnedAndOwned(player, 0, 1)
+    #endif  
+}

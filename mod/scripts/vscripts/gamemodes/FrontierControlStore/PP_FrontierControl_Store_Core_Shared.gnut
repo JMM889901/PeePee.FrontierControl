@@ -1,0 +1,85 @@
+global function FCStoreInit
+global function pp_OnWeaponActivate_FCStore
+#if SERVER || UI
+global function FCInitStoreItems
+
+
+void function FCInitStoreItems()
+{
+    FCBoostData BoostDataAmp
+    BoostDataAmp.name = "Amped_weapons"
+    BoostDataAmp.image = $"rui/menu/boosts/boost_amped_weapons"
+    BoostDataAmp.cost = 25
+    BoostDataAmp.availablefunction = FCIsBoostAvailable_AmpedWeapons
+    BoostDataAmp.usefunction = BurnReward_GetByRef( "burnmeter_amped_weapons_permanent" ).rewardAvailableCallback
+    FCAddBoost(BoostDataAmp, "Boosts")
+
+    FCBoostData BoostDataTitan
+    BoostDataTitan.name = "Unlock_Titan"
+    BoostDataTitan.image = $"rui/menu/boosts/boost_battery"
+    BoostDataTitan.cost = 100
+    BoostDataTitan.availablefunction = FCIsBoostAvailable_TitanUnlock
+    BoostDataTitan.usefunction = FCBoostUseTitanUnlock
+    FCAddBoost(BoostDataTitan, "Boosts")
+}
+#endif
+void function FCStoreInit()
+{
+    #if SERVER || CLIENT
+    PrecacheWeapon("pp_mp_ability_FCStore")
+    #endif
+    #if SERVER
+    AddClientCommandCallback("!FCBuyBoost", PlayerBuysBoost)
+    #endif
+    #if SERVER || UI
+    FCInitStoreItems()
+    #endif
+    #if UI
+    AddMenu( "FCBoostStore", $"resource/ui/menus/FCBoostStore.menu", FCInitBoostMenu )
+    FCInitBoostMenu()
+    #endif
+    
+}
+void function pp_OnWeaponActivate_FCStore(entity weapon)
+{
+    #if SERVER
+    Remote_CallFunction_UI(weapon.GetOwner(), "OpenStore")
+    #endif
+}
+#if SERVER
+bool function PlayerBuysBoost(entity player, array<string> args)
+{
+    string name = args[0]
+    foreach(string key, array<FCBoostData> value in FCGetAllBoosts())
+    {
+        foreach(FCBoostData boost in value)
+        {
+            if(boost.name == name)
+            {
+                if(boost.availablefunction())
+                {
+                    if(FCPlayerHasCredits(player, boost.cost))
+                    {
+                        FCTakeCredits(player, boost.cost)
+                        void functionref( entity ) ornull func = boost.usefunction
+                        if ( func != null )
+                            ( expect void functionref( entity ) ( func ) )( player )
+                        return true
+                    }
+                    else
+                    {
+                        print("Cannot afford")
+                        return false
+                    }
+                }
+                else
+                {
+                    print("Boost not available in this gamemode")
+                    return false
+                }
+            }
+        }
+    }
+    return false
+}
+#endif

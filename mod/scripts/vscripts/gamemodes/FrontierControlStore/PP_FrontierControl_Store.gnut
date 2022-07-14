@@ -1,0 +1,126 @@
+// script PlayerEarnMeter_AddEarnedAndOwned(GetPlayerArray()[0], 0, 1)
+//THIS IS CLIENTSIDE
+
+global function FCInitBoostMenu
+global function OpenStore
+const int FC_STORE_NUM_HYBRID_BUTTONS = 2
+//global function FCServerCallback_OpenBoostMenu
+//global function FCOnOpenBoostMenu
+struct{
+    string SelectedCategory
+    table<var, FCBoostData> ButtonUpgrades
+} file
+void function FCInitBoostMenu()
+{
+    var menu = GetMenu("FCBoostStore")
+    AddMenuEventHandler( menu, eUIEvent.MENU_OPEN, OnOpenFCStoreMenu )
+    array<var> CashSymbols =  GetElementsByClassname( menu, "CashSymbolClass" )
+    print(CashSymbols.len() + "cash symbols len")
+    foreach(var CashSymbol in CashSymbols)
+    {
+        RuiSetImage( Hud_GetRui(CashSymbol), "basicImage", $"rui/hud/gametype_icons/bounty_hunt/bh_bonus_icon" )
+        print("bruh")
+    }
+
+    array<var> Buttons = GetElementsByClassname( menu, "ItemButton" )
+    foreach(var button in Buttons)
+    {
+        AddButtonEventHandler( Hud_GetChild(button, "ItemBuyButton"), UIE_CLICK, BuyBoost )
+    }
+	//var imageRui = Hud_GetRui( Hud_GetChild( menu, "CashSymbol" ) )
+    file.SelectedCategory = "Boosts"
+}
+void function OnOpenFCStoreMenu()
+{
+
+    var menu = GetMenu("FCBoostStore")
+    array<var> CashLabels =  GetElementsByClassname( menu, "CashLabelClass" )
+    foreach(var CashLabel in CashLabels)
+    {
+        Hud_SetText(CashLabel, GetConVarString("FCLocalCredits"))
+    }
+    //FCUpdateStoreMenu()
+    array<FCBoostData> BoostsToAdd = clone FCGetAvailableBoosts(file.SelectedCategory)
+    array<FCUpgradeData> UpgradesToAdd = clone FCGetAvailableUpgrades(file.SelectedCategory)
+    array<var> Buttons = GetElementsByClassname( menu, "ItemOrUpgradeButtons" )
+    int button = 0
+    while(BoostsToAdd.len() > 0)
+    {
+        if(BoostsToAdd.len() >= 2)//Hybrid buttons can show either 2 boosts or 1 upgrade
+        {
+            SetupHybridButtonForBoostPair(BoostsToAdd[0], BoostsToAdd[1], Buttons[button])
+            button++
+            BoostsToAdd.fastremovebyvalue(BoostsToAdd[0])
+            BoostsToAdd.fastremovebyvalue(BoostsToAdd[0])
+        }
+        else
+        {
+            SetupHybridButtonForBoost(BoostsToAdd[0], Buttons[button])
+            button++
+            BoostsToAdd.fastremovebyvalue(BoostsToAdd[0])
+        }
+    }
+    for(;button < Buttons.len(); button++)
+    {
+        Hud_SetVisible(Buttons[button], false)
+    }
+}
+void function SetupHybridButtonForBoost(FCBoostData boost, var button)
+{
+    var ItemButton = Hud_GetChild( button, "ItemButton1" )
+
+    Hud_SetVisible( ItemButton, true )
+
+    var ItemImage = Hud_GetChild( ItemButton, "ItemImage" )
+    var ItemName = Hud_GetChild( ItemButton, "ItemName" )
+    var ItemCost = Hud_GetChild( ItemButton, "CashLabel" )
+    Hud_SetText( ItemCost, string( boost.cost ) )
+    Hud_SetText( ItemName, boost.name )
+    var ItemImageRUI = Hud_GetRui( ItemImage )
+    RuiSetImage(ItemImageRUI, "basicImage", boost.image)
+
+    Hud_SetVisible( Hud_GetChild( button, "ItemButton2" ), false )
+
+
+    file.ButtonUpgrades[Hud_GetChild(ItemButton, "ItemBuyButton")] <- boost
+}
+void function SetupHybridButtonForBoostPair(FCBoostData boost,FCBoostData boost2, var button)
+{
+    var ItemButton = Hud_GetChild( button, "ItemButton1" )
+    var ItemImage = Hud_GetChild( ItemButton, "ItemImage" )
+    var ItemName = Hud_GetChild( ItemButton, "ItemName" )
+    var ItemCost = Hud_GetChild( ItemButton, "CashLabel" )
+    Hud_SetText( ItemCost, string( boost.cost ) )
+    Hud_SetText( ItemName, boost.name )
+    var ItemImageRUI = Hud_GetRui( ItemImage )
+    RuiSetImage(ItemImageRUI,"basicImage", boost.image)
+    
+    Hud_SetVisible( ItemButton, true )
+
+
+    file.ButtonUpgrades[Hud_GetChild(ItemButton, "ItemBuyButton")] <- boost
+
+    var ItemButton2 = Hud_GetChild( button, "ItemButton2" )
+    var ItemImage2 = Hud_GetChild( ItemButton2, "ItemImage" )
+    var ItemName2 = Hud_GetChild( ItemButton2, "ItemName" )
+    var ItemCost2 = Hud_GetChild( ItemButton2, "CashLabel" )
+    Hud_SetText( ItemCost2, boost2.cost.tostring() )
+    Hud_SetText( ItemName2, boost2.name )
+    var ItemImageRUI2 = Hud_GetRui( ItemImage2 )
+    RuiSetImage(ItemImageRUI2, "basicImage", boost2.image)
+    
+    Hud_SetVisible( ItemButton2, true )
+
+    file.ButtonUpgrades[Hud_GetChild(ItemButton2, "ItemBuyButton")] <- boost2
+}
+void function BuyBoost(var element)
+{
+    
+    FCBoostData boost = file.ButtonUpgrades[element]
+    int cost = boost.cost
+    ClientCommand("!FCBuyBoost "+boost.name)
+}
+void function OpenStore()
+{
+    AdvanceMenu(GetMenu("FCBoostStore"))
+}

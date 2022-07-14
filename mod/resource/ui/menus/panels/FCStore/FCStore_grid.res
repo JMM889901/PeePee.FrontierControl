@@ -33,7 +33,7 @@
         ControlName				CNestedPanel
         xpos					0
         ypos					0
-        zpos                    5
+        zpos                    4
         wide					f0
         tall					f0
         visible					1
@@ -45,29 +45,31 @@
         ControlName				CNestedPanel
         xpos					0
         ypos					0
+        zpos                    5
         wide					f0
         tall					f0
         visible					1
         Classname               ItemOrUpgradeButtons
         scriptID                1
         controlSettingsFile		"resource/ui/menus/panels/FCStore/FCStoreButtons/FCBoostPairOrUpgradeButton.res"
-        pin_to_sibling          CentreLine
-        pin_corner_to_sibling   TOP_RIGHT
-        pin_to_sibling_corner   TOP_LEFT
+        pin_to_sibling          CategoryBackdrop
+        pin_corner_to_sibling   TOP_LEFT
+        pin_to_sibling_corner   TOP_RIGHT
     }
-    //ItemButtons2
-    //{
-    //    ControlName				CNestedPanel
-    //    xpos					0
-    //    ypos					0
-    //    wide					f0
-    //    tall					f0
-    //    visible					1
-    //    Classname               ItemOrUpgradeButtons
-    //    scriptID                2
-    //    controlSettingsFile		"resource/ui/menus/panels/FCStore/FCStoreButtons/FCBoostPairOrUpgradeButton.res"
-    //    pin_to_sibling          CentreLine
-    //    pin_corner_to_sibling   TOP_LEFT
-    //    pin_to_sibling_corner   TOP_RIGHT
-    //}
+    ItemButtons2
+    {
+        ControlName				CNestedPanel
+        xpos					0
+        ypos					0
+        zpos                    6
+        wide					f0
+        tall					f0
+        visible					1
+        Classname               ItemOrUpgradeButtons
+        scriptID                2
+        controlSettingsFile		"resource/ui/menus/panels/FCStore/FCStoreButtons/FCBoostPairOrUpgradeButton.res"
+        pin_to_sibling          CentreLine
+        pin_corner_to_sibling   TOP_LEFT
+        pin_to_sibling_corner   TOP_RIGHT
+    }
 }

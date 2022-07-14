@@ -1,0 +1,78 @@
+globalize_all_functions
+
+global struct FCBoostData{
+    asset image
+    string name
+    int cost
+    bool functionref() availablefunction
+    void functionref(entity) ornull usefunction
+}
+global struct FCUpgradeData{
+    asset image
+    string name
+    array<int> costs
+    int maxUpgrades
+    int Stage = 0
+    bool functionref() availablefunction
+    void functionref(entity) ornull usefunction
+}
+struct{
+    table< string, array<FCBoostData> > AllBoosts
+    table< string, array<FCUpgradeData> > AllUpgrades
+} file
+
+
+void function FCAddBoost(FCBoostData Boost, string Category)
+{
+    if(Category in file.AllBoosts)
+        file.AllBoosts[Category].append(Boost)
+    else
+        file.AllBoosts[Category] <- [Boost]
+}
+void function FCAddUpgrade(FCUpgradeData Upgrade, string Category)
+{
+    if(Category in file.AllUpgrades)
+        file.AllUpgrades[Category].append(Upgrade)
+    else
+        file.AllUpgrades[Category] <- [Upgrade]
+}
+array<FCBoostData> function FCGetBoostData(string category)
+{
+    return file.AllBoosts[category]
+}
+array<FCUpgradeData> function FCGetUpgradeData(string category)
+{
+    return file.AllUpgrades[category]
+}
+array<FCBoostData> function FCGetAvailableBoosts(string category)
+{
+    array<FCBoostData> Boosts = []
+    if( !( category in file.AllBoosts ) )
+        return Boosts
+    foreach(FCBoostData boost in file.AllBoosts[category])
+    {
+        if(boost.availablefunction())
+            Boosts.append(boost)
+    }   
+    return Boosts
+}
+array<FCUpgradeData> function FCGetAvailableUpgrades(string category)
+{
+    array<FCUpgradeData> Upgrades = []
+    if( !( category in file.AllUpgrades ) )
+        return Upgrades
+    foreach(FCUpgradeData Upgrade in file.AllUpgrades[category])
+    {
+        if(Upgrade.availablefunction())
+            Upgrades.append(Upgrade)
+    }   
+    return Upgrades
+}
+table< string, array<FCBoostData> > function FCGetAllBoosts()
+{
+    return file.AllBoosts
+}
+table< string, array<FCUpgradeData> > function FCGetAllUpgrades()
+{
+    return file.AllUpgrades
+}

@@ -107,4 +107,6 @@ void function RAID_LOBBYRegisterNetworkVars()
 	RegisterNetworkedVariable( "MILdefcon", SNDC_GLOBAL, SNVT_INT, 0 )
 	Remote_RegisterFunction( "ServerCallback_AITDM_OnPlayerConnected" )
 	}
+	Remote_RegisterFunction("OpenStore")
+	Remote_RegisterFunction("FCSetLocalClientCreditsVar")
 }

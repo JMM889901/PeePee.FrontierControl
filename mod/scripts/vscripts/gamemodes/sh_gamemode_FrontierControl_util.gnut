@@ -21,7 +21,7 @@ struct {
         "mp_wargames",
         "mp_rise",
     ]
-    array<string> gameModes = ["tdm", "aitdm", "ctf", "ttdm", GAMEMODE_FCPUSH, "cp", "ps"]
+    array<string> gameModes = [ "aitdm", "ctf", "lts", GAMEMODE_FCPUSH, "cp", "at", "mfd"]
 }file
 const FRIENDLY = 1 //SERVERSIDE TEAM 1 = IMC
 const HOSTILE = 0 //SERVERSODE TEAM 0 = 
@@ -123,6 +123,7 @@ void function FCDev_GetConVars()
 void function FrontierControlUtilInit()
 {
     //file.maps.extend(GetPrivateMatchMaps() )
+
 }
 string function FC_GetMap(int map)//Now that i can pass strings i could just not do this but i dont wanna rewrite everything again
 {

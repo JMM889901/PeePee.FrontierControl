@@ -42,6 +42,9 @@ void function Respawn(entity player)
     //if(SafeSpawnLoc(player, Spawn))
     //    player.SetOrigin(Spawn)
     //else(Respawn(player))//Why yes i brute force a spawn location, why do you ask
+    if(!player.IsTitan())
+        player.GiveOffhandWeapon("pp_mp_ability_FCStore",OFFHAND_INVENTORY)
+
 }
 bool function SafeSpawnLoc(entity player, vector targetPos)
 {
@@ -304,7 +307,7 @@ void function OnShieldDamaged(entity shield, var damageInfo)
         return
     }
     entity attacker = DamageInfo_GetAttacker( damageInfo )
-    if(DamageInfo_GetDamageSourceIdentifier( damageInfo ) == eDamageSourceId.mp_titancore_laser_cannon || DamageInfo_GetDamageSourceIdentifier( damageInfo ) == eDamageSourceId.mp_titanability_slow_trap)
+    if(DamageInfo_GetDamageSourceIdentifier( damageInfo ) == eDamageSourceId.mp_titancore_laser_cannon || DamageInfo_GetDamageSourceIdentifier( damageInfo ) == eDamageSourceId.mp_titanability_slow_trap ||DamageInfo_GetDamageSourceIdentifier( damageInfo ) ==  eDamageSourceId.mp_weapon_super_spectre)
         DamageInfo_SetDamage( damageInfo, DamageInfo_GetDamage( damageInfo )/10 )
         
     float damageAmount = DamageInfo_GetDamage( damageInfo ) 

@@ -6,6 +6,7 @@ void function ValidatePlayerCreditsVar(entity player)
     string Var = FCGetCreditVarString(player)
     try{
         print(GetConVarString(Var))
+        Remote_CallFunction_UI(player, "FCSetLocalClientCreditsVar", GetConVarInt(Var))
     }
     catch (ex)
     {
@@ -18,6 +19,7 @@ void function ValidatePlayerCreditsVar(entity player)
             team = "Militia"
         FCPersit_AddTempUIDPersist(UID, team)
     }
+    
 }//TODO Need constant convar to track all used uids, convar string cap may be an issue though <-- this is done through FCPersit_AddTempUIDPersist
 //Remember to purge every restart  <-- still needs doing
 /////Most of these try catches should no longer apply, connect callback checkes this
@@ -43,6 +45,7 @@ bool function FCGiveCredits(entity player, int num, bool failed = false)
     string Var = FCGetCreditVarString(player)
     //try{
         SetConVarInt(Var, FCGetCredits(player)+num)
+        Remote_CallFunction_UI(player, "FCSetLocalClientCreditsVar", FCGetCredits(player))
         return true
     //}
     //catch (ex)
@@ -60,6 +63,7 @@ bool function FCTakeCredits(entity player, int num, bool failed = false)
     string Var = FCGetCreditVarString(player)
     try{
         SetConVarInt(Var, FCGetCredits(player)-num)
+        Remote_CallFunction_UI(player, "FCSetLocalClientCreditsVar", FCGetCredits(player))
         return true
     }
     catch (ex)
@@ -74,5 +78,9 @@ bool function FCTakeCredits(entity player, int num, bool failed = false)
 string function FCGetCreditVarString(entity player)
 {
     return ("FCTempCreditVarTeam"+player.GetTeam()+"ID"+player.GetUID())
+}
+bool function FCPlayerHasCredits(entity player, int credits)
+{
+    return FCGetCredits(player) >= credits
 }
 #endif

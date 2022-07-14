@@ -1,5 +1,5 @@
 untyped
-globalize_all_functions
+global function FCGeneralCallbacksInit
 void function FCGeneralCallbacksInit()
 {
     if(GetConVarInt("FCShouldInit") != 1)
@@ -10,6 +10,11 @@ void function FCGeneralCallbacksInit()
     Riff_ForceBoostAvailability( eBoostAvailability.Disabled )//cat_or_not my beloved
     AddCallback_GameStateEnter( eGameState.Postmatch, FCGeneralCallbackGameEnded )
     //GetPlaylistVarOrUseValue( GAMETYPE, "scorelimit", "" )
+    AddCallback_OnNPCKilled( HandleScoreEvent )
+	AddCallback_OnPlayerKilled( HandleScoreEvent )
+    AddCallback_OnPlayerRespawned(GiveStore)
+    AddCallback_OnClientConnected(ValidatePlayerCreditsVar)
+
 }
 void function FCGeneralCallbackGameEnded()
 {
@@ -22,4 +27,68 @@ void function FCGeneralCallbackGameEnded()
     int TargetIndex = GetConVarInt("FCSelectedIndex")
     SetConVarInt("FCmap"+TargetIndex+"Owner", GameScore_GetWinningTeam())
     GameRules_ChangeMap("mp_lf_township", GAMEMODE_RAIDLOBBY /*"FrontierControl*/)
+}
+void function HandleScoreEvent( entity victim, entity attacker, var damageInfo )
+{
+	// Basic checks
+	if ( victim == attacker || !( attacker.IsPlayer() || attacker.IsTitan() ) || GetGameState() != eGameState.Playing )
+		return
+	
+	// Hacked spectre filter
+	if ( victim.GetOwner() == attacker )
+		return
+	
+	// Split score so we can check if we are over the score max
+	// without showing the wrong value on client
+	int playerScore
+	string eventName
+	
+	// Handle AI, marvins aren't setup so we check for them to prevent crash
+	if ( victim.IsNPC() && victim.GetClassName() != "npc_marvin" )
+	{
+		switch ( victim.GetClassName() )
+		{
+			case "npc_soldier":
+			case "npc_spectre":
+			case "npc_stalker":
+				playerScore = 1
+				break
+			case "npc_super_spectre":
+				playerScore = 3
+				break
+			default:
+				playerScore = 0
+				break
+		}
+		
+		// Titan kills get handled bellow this
+		if ( eventName != "KillNPCTitan"  && eventName != "" )
+			playerScore = ScoreEvent_GetPointValue( GetScoreEvent( eventName ) )
+	}
+	
+	if ( victim.IsPlayer() )
+		playerScore = 5
+	
+	// Player ejecting triggers this without the extra check
+	if ( victim.IsTitan() && victim.GetBossPlayer() != attacker )
+		playerScore += 10
+	
+	
+	
+	// Check score so we dont go over max
+	//if ( GameRules_GetTeamScore(attacker.GetTeam()) + teamScore > GetScoreLimit_FromPlaylist() )
+	//	teamScore = GetScoreLimit_FromPlaylist() - GameRules_GetTeamScore(attacker.GetTeam())
+	
+	// Add score + update network int to trigger the "Score +n" popup
+	//AddTeamScore( attacker.GetTeam(), teamScore )
+	attacker.AddToPlayerGameStat( PGS_ASSAULT_SCORE, playerScore )
+	if(attacker.IsPlayer())
+		FCGiveCredits(attacker, playerScore)
+	attacker.SetPlayerNetInt("AT_bonusPoints", attacker.GetPlayerGameStat( PGS_ASSAULT_SCORE ) )
+}
+void function GiveStore(entity player)
+{
+    if(!player.IsTitan())
+        player.GiveOffhandWeapon("pp_mp_ability_FCStore",OFFHAND_INVENTORY)
+
 }

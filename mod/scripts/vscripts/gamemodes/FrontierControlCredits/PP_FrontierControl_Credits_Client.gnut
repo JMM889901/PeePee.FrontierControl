@@ -1,0 +1,5 @@
+global function FCSetLocalClientCreditsVar
+void function FCSetLocalClientCreditsVar(int count)
+{
+    SetConVarInt("FCLocalCredits", count)
+}

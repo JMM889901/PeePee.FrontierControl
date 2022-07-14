@@ -49,44 +49,55 @@
             }
         },
         {
-			"Path": "gamemodes//FrontierControlPush/PP_Gamemode_FrontierControlPush.gnut",
-			"RunOn": "CLIENT || SERVER",
-			"ClientCallback": {
-				"After": "PP_HarvesterPush_init"
-			},
-
-			"ServerCallback": {
-				"After": "PP_HarvesterPush_init"
-			}
-		},
-        {
-			"Path": "gamemodes//FrontierControlCredits/PP_FrontierControl_Credits_util_server.gnut",
+			"Path": "gamemodes/FrontierControlPush/PP_Gamemode_FrontierControlPush.gnut",
 			"RunOn": "CLIENT || SERVER"
 		},
         {
-			"Path": "gamemodes//FrontierControlCredits/PP_FrontierControl_Credits_UIDPersist_Util.gnut",
+			"Path": "gamemodes/FrontierControlCredits/PP_FrontierControl_Credits_util_server.gnut",
 			"RunOn": "CLIENT || SERVER"
 		},
         {
-			"Path": "gamemodes//FrontierControlPush/PP_Gamemode_FrontierControlPush_Util.gnut",
+			"Path": "gamemodes/FrontierControlCredits/PP_FrontierControl_Credits_UIDPersist_Util.gnut",
 			"RunOn": "SERVER"
 		},
         {
-			"Path": "gamemodes//FrontierControlGeneralGamemodeSupport/PP_FrontierControl_GeneralGamemodeCallbacks.gnut",
+			"Path": "gamemodes/FrontierControlPush/PP_Gamemode_FrontierControlPush_Util.gnut",
+			"RunOn": "SERVER"
+		},
+        {
+			"Path": "gamemodes/FrontierControlCredits/PP_FrontierControl_Credits_Client.gnut",
+			"RunOn": "UI"
+		},
+        {
+			"Path": "gamemodes/FrontierControlGeneralGamemodeSupport/PP_FrontierControl_GeneralGamemodeCallbacks.gnut",
 			"RunOn": "SERVER",
 			"ServerCallback": {
 				"After": "FCGeneralCallbacksInit"
 			}
 		},
         {
-			"Path": "gamemodes//FrontierControlStore/PP_FrontierControl_Store_Util.gnut",
-			"RunOn": "UI",
-			"UICallback": {
-				"After": "FCStoreInit"
-			}
+			"Path": "gamemodes/FrontierControlStore/PP_FrontierControl_Store_Util_Shared.gnut",
+			"RunOn": "UI || SERVER"
 		},
         {
-			"Path": "gamemodes//FrontierControlStore/PP_FrontierControl_Store_Boosts.gnut",
+			"Path": "gamemodes/FrontierControlStore/PP_FrontierControl_Store_Core_Shared.gnut",
+			"RunOn": "UI || SERVER || CLIENT",
+            "UICallback": {
+				"After": "FCStoreInit"
+			},
+            "ServerCallback": {
+				"After": "FCStoreInit"
+			},
+            "ClientCallback": {
+				"After": "FCStoreInit"
+			}
+        },
+        {
+			"Path": "gamemodes/FrontierControlStore/FrontierControlStoreItems/FCBoostsDefault.gnut",
+			"RunOn": "UI || SERVER"
+		},
+        {
+			"Path": "gamemodes/FrontierControlStore/PP_FrontierControl_Store.gnut",
 			"RunOn": "UI"
 		},
 		{
@@ -181,6 +192,10 @@
         },
         {
             "Name": "FCSelectedIndex",
+            "DefaultValue": "0"
+        },
+        {
+            "Name": "FCLocalCredits",
             "DefaultValue": "0"
         },//Pain pain pain
         {//Each of these convars should store at most 250 characters
